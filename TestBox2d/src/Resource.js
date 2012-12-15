@@ -1,6 +1,7 @@
 //image
 var s_background 	= "TestBox2d/res/back.png";
 var s_objects 		= "TestBox2d/res/gameObjectsAtl.png";
+var s_bg1           = "TestBox2d/res/bg_land1_color.png";
 
 //music
 
@@ -19,6 +20,7 @@ var g_ressources = [
     {type:"image", src:s_background},
     {type:"image", src:s_objects},    
     {type:"image", src:s_tmwDesertSpacingPng},
+    {type:"image", src:s_bg1},
 
     //tmx ressources
     {type:"tmx", src:"TestBox2d/res/TileMaps/land1.tmx"},

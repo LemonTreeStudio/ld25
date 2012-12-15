@@ -193,6 +193,7 @@ var GameField = cc.Layer.extend(
     hazards:null,
     gameOver:null,
     hideMode:true,
+    back:null,
 
     ctor:function () {
         //cc.associateWithNative( this, cc.Layer );
@@ -208,10 +209,11 @@ var GameField = cc.Layer.extend(
         {
             var screenSize = cc.Director.getInstance().getWinSize();
 
-            // var back = cc.Sprite.create(s_background);
-            // back.setAnchorPoint(cc.PointZero());
-            // back.setPosition(cc.PointZero());
-            // this.addChild(back, -10);
+            this.back = cc.Sprite.create(s_bg1);
+            this.back.setAnchorPoint(cc.PointZero());
+            this.back.setScaleX(1.5);
+            this.back.setPosition(cc.PointZero());
+            this.addChild(this.back, -10);
 
             // Load atlas with sprites
             cc.SpriteFrameCache.getInstance().addSpriteFrames(s_objects_plist, s_objects);
@@ -501,6 +503,8 @@ var GameField = cc.Layer.extend(
         var centerOfView = cc.PointMake(winSize.width/2, winSize.height/2);
         var viewPoint = cc.pSub(centerOfView, actualPosition);
         this.map.setPosition(viewPoint); 
+
+        this.back.setPosition(cc.PointMake(viewPoint.x / 4.0, viewPoint.y));
     },
 
     hideColorForTile:function (position) {
