@@ -1,0 +1,597 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"size",
+				"size"
+			],
+			[
+				"fra",
+				"frame"
+			],
+			[
+				"pro",
+				"prototype"
+			],
+			[
+				"Action",
+				"Actioninterval"
+			],
+			[
+				"exte",
+				"extend"
+			],
+			[
+				"init",
+				"initWithDuration"
+			],
+			[
+				"SDL",
+				"SDL_LoadBMP"
+			],
+			[
+				"node",
+				"node"
+			],
+			[
+				"new",
+				"newCow"
+			],
+			[
+				"is",
+				"isKeysAvailable"
+			],
+			[
+				"cow",
+				"cowJumpSpeed"
+			],
+			[
+				"star",
+				"starAction"
+			],
+			[
+				"set",
+				"setIsReborned"
+			],
+			[
+				"death",
+				"deathCow"
+			],
+			[
+				"de",
+				"deathAction"
+			],
+			[
+				"isCo",
+				"isCowJumping"
+			],
+			[
+				"Move",
+				"MoveTo"
+			],
+			[
+				"cloud",
+				"cloud1"
+			],
+			[
+				"po",
+				"position"
+			],
+			[
+				"gra",
+				"grass"
+			],
+			[
+				"create",
+				"create"
+			],
+			[
+				"action",
+				"actionCloudBack"
+			],
+			[
+				"actionClou",
+				"actionCloudMoveBy"
+			],
+			[
+				"createBody",
+				"createBodyAndSpriteEvil"
+			],
+			[
+				"cre",
+				"createBodyAndSprite"
+			],
+			[
+				"la",
+				"lazyLayer"
+			],
+			[
+				"Crea",
+				"CreateBody"
+			],
+			[
+				"an",
+				"setAnchorPoint"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"c",
+				"create"
+			],
+			[
+				"w",
+				"width"
+			],
+			[
+				"body",
+				"bodyDef"
+			],
+			[
+				"fix",
+				"fixDef"
+			],
+			[
+				"fu",
+				"function"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "TestBox2d/src/AppDelegate.js",
+			"settings":
+			{
+				"buffer_size": 3188,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "TestBox2d/src/GameField.js",
+			"settings":
+			{
+				"buffer_size": 16536,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "TestBox2d/src/Resource.js",
+			"settings":
+			{
+				"buffer_size": 745,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cocos2d/actions/CCActionInterval.js",
+			"settings":
+			{
+				"buffer_size": 56354,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"",
+				"Code Folding: Fold Tag Attributes"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/game/cocos2d.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/cocos2d/tileMap_parallax_nodes/CCTMXLayer.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/game/src/lnHideAction",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/cocos2d/tileMap_parallax_nodes/CCTMXTiledMap.js",
+		"/Users/lun/octopress/source/_posts/2012-11-19-new-post.markdown",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/cocos2d/tileMap_parallax_nodes/CCTileMapAtlas.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/index.html",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/main.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/index.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/game/src/SysMenu.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/Game/game/src/Intro.js",
+		"/Users/lun/_Projects/HungryChicks/HungryChicksTwo/HungryChicksTwo/Resources/TypicalObjects.plist",
+		"/Users/lun/_Projects/ColorWorlds/game/ColorWorlds/Classes/AppDelegate.h",
+		"/Users/lun/_Utils/SDL-2.0.0-6589/test/gcc-fat.sh",
+		"/Users/lun/_Utils/SDL-2.0.0-6589/test/README",
+		"/Users/lun/_Utils/SDL-2.0.0-6589/README",
+		"/Users/lun/Desktop/Victory Terror in Europe/viktory/src/Combat.js",
+		"/Users/lun/_Projects/HungryChicks/HungryChicksTwo/HungryChicksTwo/Resources/Graphic/Sheets/menu-hd.plist",
+		"/Users/lun/_Utils/cocos2d-2.0-x-2.0.3/cocos2dx/actions/CCAction.cpp",
+		"/Users/lun/Desktop/Самые интересные",
+		"/Users/lun/_Projects/HungryChicks/HungryChicksTwo/HungryChicksTwo/Resources/Graphic/Sheets/chicken.plist",
+		"/Users/lun/_Projects/HungryChicks/HungryChicksTwo/HungryChicksTwo/Resources/Graphic/Sheets/chicken-hd.plist",
+		"/Users/lun/Dropbox/Public/HC2_Levels.plist",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKViewControllerWrapper.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKViewControllerWrapper.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKShareMenu.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKShareMenu.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKOAuthView.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKOAuthView.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKFormFieldSettings.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKFormFieldSettings.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKFormFieldCell.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKFormFieldCell.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKFormController.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKFormController.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKActivityIndicator.h",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKActivityIndicator.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKActionSheet.m",
+		"/Users/lun/_Projects/iWork/AnimalLab/Classes/ShareKit/UI/SHKActionSheet.h",
+		"/Users/lun/_Projects/MyLittleMonster/MTM/classes/Engine/Monster.m",
+		"/Users/lun/_Projects/MyLittleMonster/MTM/classes/Engine/Monster.h",
+		"/Users/lun/_Projects/MyLittleMonster/MTM/classes/Engine/MonsterResourceLoader.m",
+		"/Users/lun/_Projects/MyLittleMonster/MTM/classes/Engine/MonsterResourceLoader.h",
+		"/Users/lun/Downloads/_Skype/GameLayer.mm",
+		"/Users/lun/_Projects/Words/Words/Resources/Basicdots.ttf",
+		"/Users/lun/_Projects/HungryChicks/HungryChicksTwo/HungryChicksTwo/Classes/Engine/ObjectsCreator.mm",
+		"/Users/lun/_Projects/HungryChicks/HungryChicksTwo/HungryChicksTwo/Classes/Engine/ObjectsCreator.h",
+		"/Users/lun/Desktop/bill",
+		"/Users/lun/_Projects/_Platforms/_Platforms/Hero.m",
+		"/Users/lun/_Projects/_Platforms/_Platforms/Hero.h",
+		"/Users/lun/_Projects/_Platforms/_Platforms/GameLayer.mm",
+		"/Users/lun/_Projects/_Platforms/_Platforms/GameLayer.h",
+		"/Users/lun/_Projects/FarmFrenzy/README",
+		"/Users/lun/Downloads/_Skype/BalloonFight/BalloonFight/GameLayer.mm",
+		"/Users/lun/Desktop/Monokai _YoYurec_.xml.html",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/LD48/src/BlackAndWhite.js",
+		"/Users/lun/Downloads/_Skype/index.html",
+		"/Users/lun/_Projects/HungryChicks/HC2_LevelEditor/Resources/TypicalObjects.plist",
+		"/Users/lun/Desktop/Monkey",
+		"/Users/lun/Downloads/_Chrome/src/Level.as",
+		"/Users/lun/Downloads/_Chrome/Box2dWeb-2.1a.3/demo.html",
+		"/Users/lun/_Utils/cocos2d-cocos2d-html5-2102400/cocos2d/CCDirector.js",
+		"/Users/lun/Desktop/Monokai.xml",
+		"/Users/lun/Desktop/Nightmare/Nigtmare.bat",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/main.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/LD48/src/GameField.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/LD48/src/IntroFalling.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/LD48/src/Intro.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/LD48/cocos2d.js",
+		"/Users/lun/_Projects/html5game/cocos2d/CCDirector.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/cocos2d/CCDirector.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/cocos2d.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/main.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/src/BlackAndWhite.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/src/Intro.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/src/IntroFalling.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/LD48/src/Resource.js",
+		"/Users/lun/Downloads/_Skype/FinalUp[date/LD48/src/Resource.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD48/index.html",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/index.html",
+		"/Applications/XAMPP/xamppfiles/htdocs/CocosDenshion/SimpleAudioEngine.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/src/AppDelegate.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/cocos2d/CCDirector.js",
+		"/Users/lun/Desktop/___GameField.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/LD/src/GameField.js",
+		"/Users/lun/Downloads/_Skype/Архив 2/index.html",
+		"/Users/lun/Downloads/_Skype/Архив 2/TestGame/cocos2d.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/Box2dWeb/Box2dWeb-2.1.a.3.min.js",
+		"/Users/lun/_Projects/html5Template/box2d/box2d.js",
+		"/Users/lun/_Projects/html5Template/template/src/myApp.js",
+		"/Users/lun/_Projects/html5Template/template/main.js",
+		"/Users/lun/_Projects/html5Template/template/cocos2d.js",
+		"/Users/lun/Dropbox/Private/money",
+		"/Users/lun/_Projects/html5game/html5Game/cocos2d.js",
+		"/Users/lun/_Projects/html5game/html5Game/Classes/AppDelegate.js",
+		"/Users/lun/_Projects/html5game/html5Game/MyFirstApp.js",
+		"/Users/lun/Dropbox/Private/лиля",
+		"/Users/lun/_Projects/html5game/html5Game/index.html",
+		"/Users/lun/Dropbox/Public/оля",
+		"/Users/lun/Desktop/bball",
+		"/Users/lun/_Projects/_TileMapTraining/_TileMapTraining/GameLayer.m",
+		"/C/wamp/www/HelloWorld/HelloWorld.html",
+		"/C/wamp/www/tests/Classes/tests/SchedulerTest/SchedulerTest.js",
+		"/C/wamp/www/cocos2d/sprite_nodes/CCSprite.js",
+		"/C/wamp/www/HelloWorld/Classes/AppDelegate.js",
+		"/C/wamp/www/HelloWorld/Helloworld.js",
+		"/C/Users/Mike/AppData/Roaming/Sublime Text 2/Packages/SublimeCodeIntel/Base File.sublime-settings",
+		"/C/Users/Mike/AppData/Roaming/Sublime Text 2/Packages/User/Base File.sublime-settings",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/HelloWorld/Helloworld.js",
+		"/C/wamp/www/MyFirstApp/Classes/AppDelegate.js",
+		"/C/wamp/www/MyFirstApp/MyFirstApp.js",
+		"/C/wamp/www/MyFirstApp/cocos2d.js",
+		"/C/wamp/www/MyFirstApp/index.html",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/HelloWorld/Classes/AppDelegate.js",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/HelloWorld/HelloWorld.html",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/Demo/HelloWorldTutorial/Helloworld.js",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/HelloWorld/cocos2d.js",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/Demo/demo.html",
+		"/C/Users/Mike/Desktop/cocos2d-cocos2d-html5/index.html"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"/Applications/XAMPP/xamppfiles/htdocs/Game/cocos2d",
+			"C:\\wamp\\www\\tests",
+			"C:\\wamp\\www\\cocos2d\\"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"runAc",
+			"runAction",
+			"size",
+			"setTextureRect",
+			"cc.SizeZero()",
+			"setTextureRect",
+			"this._position.x",
+			"frameRect",
+			"frame",
+			"this.frame",
+			"Hide",
+			"FiniteTimeAction",
+			"update",
+			"rect",
+			"create",
+			"return",
+			"cos",
+			"stopIdleForever",
+			"idleHighLifeForever",
+			"kIdleForeverTag",
+			"stopIdleForever",
+			"unloadAllAnimations",
+			"waitBeforeAttack",
+			"idleForever",
+			"unloadResourcesWithPrefix",
+			"MonsterResourceLoader",
+			"самолет",
+			"link",
+			"b->GetUserData()",
+			"keypadDispa",
+			"keyboardDispatcher",
+			"effect",
+			"ln",
+			"effect",
+			"jump",
+			"keypadDis",
+			"))\n",
+			"isReborned",
+			"setRestarted",
+			"isRestarted",
+			"isKeysAvailable",
+			"screenSize",
+			"keyp",
+			"create",
+			"screenSize",
+			"Sprite",
+			"sprite",
+			"SetAsBox",
+			"drawImage",
+			"b2DebugDraw\n",
+			"\n",
+			"SetFlags\nb2DebugDraw\n",
+			"SetFlags\nSetFlags\n",
+			"step",
+			"scheduleUpdate"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"setIsCowReborningNow",
+			"isCowReborningNow",
+			"size"
+		],
+		"reverse": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "TestBox2d/src/AppDelegate.js",
+					"settings":
+					{
+						"buffer_size": 3188,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "TestBox2d/src/GameField.js",
+					"settings":
+					{
+						"buffer_size": 16536,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "TestBox2d/src/Resource.js",
+					"settings":
+					{
+						"buffer_size": 745,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "cocos2d/actions/CCActionInterval.js",
+					"settings":
+					{
+						"buffer_size": 56354,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}

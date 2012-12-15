@@ -1599,6 +1599,63 @@ cc.FadeTo.create = function (duration, opacity) {
     return fadeTo;
 };
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/** Hides object.
+ * @warning This action doesn't support "reverse"
+ * @class
+ * @extends cc.ActionInterval
+ */
+
+cc.SuperHide = cc.ActionInterval.extend({
+    
+    initWithDuration:function(duration) {
+        if (cc.ActionInterval.prototype.initWithDuration.call(this,duration)) {
+            // this._endPosition = position;
+            return true;
+        }
+
+        return false;
+    },
+
+    update:function (time) {
+        if (this._target) {
+            // this._target._position = cc.p(this._target._position.x, this._target._position.y - 1);
+            var r = this._target._texture;
+            var dh = r.height * time;    
+            this._target.setTextureRect(cc.RectMake(0, r.height, r.width, - r.height + dh), false, cc.Size(r.width, r.height));
+
+            this._target.setPosition(cc.p(this._target._position.x, this._target._position.y - 1));
+            // this._target.setPosition(cc.p(this._target._position.x, this._target._position.y - r.normalHeight / 2 + (-r.height  + dh) / 2));
+
+            // FIXME  
+
+        }
+    },
+
+    startWithTarget:function (target) {
+        cc.ActionInterval.prototype.startWithTarget.call(this,target);
+        // this._fromOpacity = target.getOpacity();
+    },
+})
+
+/**
+ * @param {Number} d  duration in seconds
+ * @return {cc.SuperHide}
+ * @example
+ * // example
+ * var action = cc.SuperHide.create(1.0);
+ */
+cc.SuperHide.create = function (d) {
+    var action = new cc.SuperHide();
+
+    action.initWithDuration(d);
+
+    return action;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+P
+
 
 /** Tints a cc.Node that implements the cc.NodeRGB protocol from current tint to a custom one.
  * @warning This action doesn't support "reverse"
