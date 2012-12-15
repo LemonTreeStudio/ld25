@@ -55,7 +55,7 @@ cc.Player = cc.Sprite.extend({
         }
     
         var minMovement = cc.PointMake(-120.0, -450.0);
-        var maxMovement = cc.PointMake(120.0, 250.0);
+        var maxMovement = cc.PointMake(120.0, 260.0);
         this.velocity = cc.pClamp(this.velocity, minMovement, maxMovement);
     
         this.velocity = cc.pAdd(this.velocity, gravityStep);
@@ -194,6 +194,8 @@ var GameField = cc.Layer.extend(
     gameOver:null,
     hideMode:true,
     back:null,
+    elementsCount:0,
+    hidedCount:0,
 
     ctor:function () {
         //cc.associateWithNative( this, cc.Layer );
@@ -204,6 +206,7 @@ var GameField = cc.Layer.extend(
         var bRet = false;
         gameOver = false;
         hideMode = true;
+        hidedCount = 0;
 
         if (this._super) 
         {
@@ -233,6 +236,7 @@ var GameField = cc.Layer.extend(
             this.walls = this.map.getLayer("walls");
             this.walls2 = this.map.getLayer("walls2");
             this.hazards = this.map.getLayer("hazards");
+            elementsCount = this.walls2._children.length;
 
             // accept touch now!
             this.setTouchEnabled(true);
@@ -467,11 +471,12 @@ var GameField = cc.Layer.extend(
 
     handleHazardCollisions:function (p) {
         var tiles = this.getSurroundingTilesAtPosition(p.getPosition(), this.hazards);
-        for (var dic in tiles) {
+        for (var i = 0; i < tiles.length; i++) {
+            var dic = tiles[i];
             var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height);
             var pRect = p.collisionBoundingBox();
         
-            if (parseInt(dic["gid"]) && cc.RectIntersectsRect(pRect, tileRect)) {
+            if (parseInt(dic["gid"]) && cc.rectIntersectsRect(pRect, tileRect)) {
                 this.gameOver(0);
             }
         }
@@ -509,7 +514,10 @@ var GameField = cc.Layer.extend(
 
     hideColorForTile:function (position) {
         if(hideMode) {
-            this.walls2.hideTileAt(position);
+            if(this.walls2.hideTileAt(position)) {
+                ++hidedCount;
+                this.back.setOpacity(255 * (1 - hidedCount / elementsCount));
+            }
         }
         else {
             this.walls2.showTileAt(position);

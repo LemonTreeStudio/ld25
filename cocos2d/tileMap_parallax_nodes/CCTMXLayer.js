@@ -333,8 +333,10 @@ cc.TMXLayer = cc.SpriteBatchNode.extend(/** @lends cc.TMXLayer# */{
                 var removeAction = cc.FadeOut.create(1.0);
                 tile.setTag(123);
                 tile.runAction(removeAction);
+                return true;
             }
         }
+        return false;
     },
 
     showTileAt:function (pos) {
@@ -354,8 +356,10 @@ cc.TMXLayer = cc.SpriteBatchNode.extend(/** @lends cc.TMXLayer# */{
                 var removeAction = cc.FadeIn.create(1.0);
                 tile.setTag(124);
                 tile.runAction(removeAction);
+                return true;
             }
         }
+        return false;
     },
 
     /**
