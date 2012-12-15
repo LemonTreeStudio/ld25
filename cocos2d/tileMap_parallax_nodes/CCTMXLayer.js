@@ -316,6 +316,48 @@ cc.TMXLayer = cc.SpriteBatchNode.extend(/** @lends cc.TMXLayer# */{
     // XXX: deprecated
     // tileFlagAt:getTileFlagsAt,
 
+    hideTileAt:function (pos) {
+        cc.Assert(pos.x < this._layerSize.width && pos.y < this._layerSize.height && pos.x >= 0 && pos.y >= 0, "TMXLayer: invalid position");
+        cc.Assert(this._tiles && this._atlasIndexArray, "TMXLayer: the tiles map has been released");
+
+        var tile = null;
+        var gid = this.getTileGIDAt(pos);
+
+        // if GID == 0, then no tile is present
+        if (gid) {
+            var z = pos.x + pos.y * this._layerSize.width;
+
+            tile = this.getChildByTag(z);
+
+            if(tile != null && tile.getTag() != 123) {
+                var removeAction = cc.FadeOut.create(1.0);
+                tile.setTag(123);
+                tile.runAction(removeAction);
+            }
+        }
+    },
+
+    showTileAt:function (pos) {
+        cc.Assert(pos.x < this._layerSize.width && pos.y < this._layerSize.height && pos.x >= 0 && pos.y >= 0, "TMXLayer: invalid position");
+        cc.Assert(this._tiles && this._atlasIndexArray, "TMXLayer: the tiles map has been released");
+
+        var tile = null;
+        var gid = this.getTileGIDAt(pos);
+
+        // if GID == 0, then no tile is present
+        if (gid) {
+            var z = pos.x + pos.y * this._layerSize.width;
+
+            tile = this.getChildByTag(z);
+
+            if(tile != null && tile.getTag() != 124) {
+                var removeAction = cc.FadeIn.create(1.0);
+                tile.setTag(124);
+                tile.runAction(removeAction);
+            }
+        }
+    },
+
     /**
      * <p>Sets the tile gid (gid = tile global id) at a given tile coordinate.<br />
      * The Tile GID can be obtained by using the method "tileGIDAt" or by using the TMX editor . Tileset Mgr +1.<br />
@@ -324,7 +366,7 @@ cc.TMXLayer = cc.SpriteBatchNode.extend(/** @lends cc.TMXLayer# */{
      * @param {cc.Point} pos
      * @param {Number} flags
      */
-    setTileGID:function (gid, pos, flags) {
+        setTileGID:function (gid, pos, flags) {
         cc.Assert(pos.x < this._layerSize.width && pos.y < this._layerSize.height && pos.x >= 0 && pos.y >= 0, "TMXLayer: invalid position");
         cc.Assert(this._tiles && this._atlasIndexArray, "TMXLayer: the tiles map has been released");
         cc.Assert(gid !== 0 || !(gid >= this._tileSet.firstGid), "TMXLayer: invalid gid:" + gid);

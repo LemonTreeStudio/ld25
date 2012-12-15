@@ -24,7 +24,7 @@ cc.Player = cc.Sprite.extend({
     },
 
     update:function (dt) {
-        var jumpForce = cc.PointMake(0.0, 310.0);
+        var jumpForce = cc.PointMake(0.0, 350.0);
         var jumpCutoff = 150.0;
     
         if (this.mightAsWellJump && this.onGround) {
@@ -44,11 +44,14 @@ cc.Player = cc.Sprite.extend({
             var forwardMove = cc.PointMake(800.0, 0.0);
             var forwardStep = cc.pMult(forwardMove, dt);
             this.velocity = cc.pAdd(this.velocity, forwardStep);
+            this.setFlipX(false);
         }
         else if(this.moveType == kMoveLeft) {
+
             var forwardMove = cc.PointMake(-800.0, 0.0);
             var forwardStep = cc.pMult(forwardMove, dt);
             this.velocity = cc.pAdd(this.velocity, forwardStep);
+            this.setFlipX(true);
         }
     
         var minMovement = cc.PointMake(-120.0, -450.0);
@@ -186,8 +189,10 @@ var GameField = cc.Layer.extend(
     map:null,
     player:null,
     walls:null,
+    walls2:null,
     hazards:null,
     gameOver:null,
+    hideMode:true,
 
     ctor:function () {
         //cc.associateWithNative( this, cc.Layer );
@@ -197,6 +202,7 @@ var GameField = cc.Layer.extend(
     {
         var bRet = false;
         gameOver = false;
+        hideMode = true;
 
         if (this._super) 
         {
@@ -210,7 +216,7 @@ var GameField = cc.Layer.extend(
             // Load atlas with sprites
             cc.SpriteFrameCache.getInstance().addSpriteFrames(s_objects_plist, s_objects);
 
-            this.map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/orthogonal-test3.tmx");
+            this.map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/land1.tmx");
             this.addChild(this.map, 10, 123);
 
             this.map.setScale(1.0);
@@ -223,6 +229,7 @@ var GameField = cc.Layer.extend(
             this.map.addChild(this.player, 15);
 
             this.walls = this.map.getLayer("walls");
+            this.walls2 = this.map.getLayer("walls2");
             this.hazards = this.map.getLayer("hazards");
 
             // accept touch now!
@@ -258,7 +265,7 @@ var GameField = cc.Layer.extend(
     },
 
     onKeyDown:function (e) 
-    {
+    {        
         if(e == cc.KEY.r)
         {
             this.restartGame();           
@@ -275,6 +282,10 @@ var GameField = cc.Layer.extend(
         {
             this.player.mightAsWellJump = true;
         }
+        else if(e == cc.KEY.shift) 
+        {
+            hideMode = false;
+        }
     },
     
     onKeyUp:function (e) 
@@ -290,6 +301,10 @@ var GameField = cc.Layer.extend(
         else if(e == cc.KEY.space) 
         {
             this.player.mightAsWellJump = false;
+        }
+        else if(e == cc.KEY.shift) 
+        {
+            hideMode = true;
         }
     },
 
@@ -330,7 +345,7 @@ var GameField = cc.Layer.extend(
             var r =  Math.floor(i / 3);
             var tilePos = cc.PointMake(plPos.x + (c - 1), plPos.y + (r - 1));
         
-            if (tilePos.y > (this.map.getMapSize().height + 50)) {
+            if (tilePos.y >= (this.map.getMapSize().height)) {
                 //fallen in a hole
                 this.gameOver(0);
                 return null;
@@ -398,19 +413,23 @@ var GameField = cc.Layer.extend(
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + intersection.size.height);
                         p.velocity = cc.PointMake(p.velocity.x, 0.0);
                         p.onGround = true;
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 1) {
                         //tile is directly above player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y - intersection.size.height);
                         p.velocity = cc.PointMake(p.velocity.x, 0.0);
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 2) {
                         //tile is left of player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x + intersection.size.width, p.desiredPosition.y);
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 3) {
                         //tile is right of player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x - intersection.size.width, p.desiredPosition.y);
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else {
                         if (intersection.size.width > intersection.size.height) {
@@ -424,7 +443,7 @@ var GameField = cc.Layer.extend(
                                 resolutionHeight = intersection.size.height;
                             }                        
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + resolutionHeight );
-                        
+                            this.hideColorForTile(dic["tilePos"]);                        
                         } 
                         else {
                             var resolutionWidth;
@@ -435,6 +454,7 @@ var GameField = cc.Layer.extend(
                                 resolutionWidth = -intersection.size.width;
                             }
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x + resolutionWidth , p.desiredPosition.y);
+                            this.hideColorForTile(dic["tilePos"]);
                         } 
                     }  
                 }
@@ -467,7 +487,9 @@ var GameField = cc.Layer.extend(
     },
 
     setViewpointCenter:function (position) {
-    
+        if(gameOver) {
+            return;
+        }
         var winSize = cc.Director.getInstance().getWinSize();
     
         var x = Math.max(position.x, winSize.width / 2);
@@ -479,6 +501,15 @@ var GameField = cc.Layer.extend(
         var centerOfView = cc.PointMake(winSize.width/2, winSize.height/2);
         var viewPoint = cc.pSub(centerOfView, actualPosition);
         this.map.setPosition(viewPoint); 
+    },
+
+    hideColorForTile:function (position) {
+        if(hideMode) {
+            this.walls2.hideTileAt(position);
+        }
+        else {
+            this.walls2.showTileAt(position);
+        }
     },
 
     restartGame:function (pSender) 
