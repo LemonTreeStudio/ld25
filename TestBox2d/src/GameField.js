@@ -167,13 +167,13 @@ var GameField = cc.Layer.extend(
             this.world.SetContinuousPhysics(true);
             
              //setup debug draw
-            var debugDraw = new b2DebugDraw();
-            debugDraw.SetSprite(document.getElementById("gameCanvas").getContext("2d"));
-            debugDraw.SetDrawScale(PTM_RATIO);
-            debugDraw.SetFillAlpha(0.3);
-            debugDraw.SetLineThickness(1.0);
-            debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-            this.world.SetDebugDraw(debugDraw);
+            // var debugDraw = new b2DebugDraw();
+            // debugDraw.SetSprite(document.getElementById("gameCanvas").getContext("2d"));
+            // debugDraw.SetDrawScale(PTM_RATIO);
+            // debugDraw.SetFillAlpha(0.3);
+            // debugDraw.SetLineThickness(1.0);
+            // debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+            // this.world.SetDebugDraw(debugDraw);
 
             //setup contact listener
             var listener = new b2ContactListener;
