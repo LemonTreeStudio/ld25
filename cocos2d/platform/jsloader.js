@@ -82,6 +82,7 @@
         'touch_dispatcher/CCTouchDelegateProtocol.js',
         'touch_dispatcher/CCTouchHandler.js',
         'touch_dispatcher/CCTouchDispatcher.js',
+        'touch_dispatcher/CCMouseDispatcher.js',
         'keyboard_dispatcher/CCKeyboardDelegate.js',
         'keyboard_dispatcher/CCKeyboardDispatcher.js',
         'text_input_node/CCIMEDispatcher.js',
@@ -106,18 +107,59 @@
         'base_nodes/CCdomNode.js',
         '../CocosDenshion/SimpleAudioEngine.js'
     ];
+
     var d = document;
-    var c = d.querySelector('#cocos2d-html5').c;
+    var c = d.ccConfig;
+
+    if (c.loadExtension != null && c.loadExtension == true) {
+        engine = engine.concat([
+            '../extensions/GUI/CCControlExtension/CCControl.js',
+            '../extensions/GUI/CCControlExtension/CCControlButton.js',
+            '../extensions/GUI/CCControlExtension/CCControlUtils.js',
+            '../extensions/GUI/CCControlExtension/CCInvocation.js',
+            '../extensions/GUI/CCControlExtension/CCScale9Sprite.js',
+            '../extensions/GUI/CCControlExtension/CCMenuPassive.js',
+            '../extensions/GUI/CCControlExtension/CCControlSaturationBrightnessPicker.js',
+            '../extensions/GUI/CCControlExtension/CCControlHuePicker.js',
+            '../extensions/GUI/CCControlExtension/CCControlColourPicker.js',
+            '../extensions/GUI/CCControlExtension/CCControlSlider.js',
+            '../extensions/GUI/CCControlExtension/CCControlSwitch.js',
+            '../extensions/GUI/CCScrollView/CCScrollView.js',
+            '../extensions/GUI/CCScrollView/CCSorting.js',
+            '../extensions/GUI/CCScrollView/CCTableView.js',
+            '../extensions/CCBReader/CCNodeLoader.js',
+            '../extensions/CCBReader/CCBReaderUtil.js',
+            '../extensions/CCBReader/CCControlLoader.js',
+            '../extensions/CCBReader/CCSpriteLoader.js',
+            '../extensions/CCBReader/CCNodeLoaderLibrary.js',
+            '../extensions/CCBReader/CCBReader.js',
+            '../extensions/CCBReader/CCBValue.js',
+            '../extensions/CCBReader/CCBKeyframe.js',
+            '../extensions/CCBReader/CCBSequence.js',
+            '../extensions/CCBReader/CCBRelativePositioning.js',
+            '../extensions/CCBReader/CCBAnimationManager.js',
+            '../extensions/CCControlEditBox.js'
+        ]);
+    }
+
     if (!c.engineDir) {
         engine = [];
     }
     else {
+        if(c.box2d || c.chipmunk){
+            engine.push('Draw_Nodes/CCDrawNode.js');
+            engine.push('physics_nodes/CCPhysicsSprite.js');
+            engine.push('physics_nodes/CCPhysicsDebugNode.js');
+            if (c.box2d)
+                engine.push('../box2d/box2d.js');
+            if (c.chipmunk)
+                engine.push('../chipmunk/chipmunk.js');
+        }
         engine.forEach(function (e, i) {
             engine[i] = c.engineDir + e;
         });
     }
-    if (c.box2d)
-        engine.push('../box2d/box2d.js');
+
     var loaded = 0;
     var que = engine.concat(c.appFiles);
     que.push('main.js');

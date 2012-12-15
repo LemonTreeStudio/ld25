@@ -149,10 +149,18 @@ var GameField = cc.Layer.extend(
             , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
             , b2ContactListener = Box2D.Dynamics.b2ContactListener;            
 
-            var back = cc.Sprite.create(s_background);
-            back.setAnchorPoint(cc.PointZero());
-            back.setPosition(cc.PointZero());
-            this.addChild(back, -10);
+            // var back = cc.Sprite.create(s_background);
+            // back.setAnchorPoint(cc.PointZero());
+            // back.setPosition(cc.PointZero());
+            // this.addChild(back, -10);
+
+            var map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/orthogonal-test3.tmx");
+            this.addChild(map, 10, 123);
+
+            map.setScale(1.0);
+            map.setAnchorPoint(cc.p(0.5, 0.5));
+            map.setPosition(cc.p(500, 130));
+
 
             // Construct a world object, which will hold and simulate the rigid bodies.
             this.world = new b2World(new b2Vec2(0, 10), true);

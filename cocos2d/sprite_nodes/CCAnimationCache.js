@@ -69,7 +69,9 @@ cc.AnimationCache = cc.Class.extend(/** @lends cc.AnimationCache# */{
      * @return {cc.Animation}
      */
     getAnimation:function (name) {
-        return this._animations[name];
+        if(this._animations.hasOwnProperty(name))
+            return this._animations[name];
+        return null;
     },
 
     /**
@@ -116,7 +118,7 @@ cc.AnimationCache = cc.Class.extend(/** @lends cc.AnimationCache# */{
      * </p>
      * @param {String} plist
      */
-    addAnimationsWithFile:function (plist) {
+    addAnimations:function (plist) {
         cc.Assert(plist, "Invalid texture file name");
 
         var path = cc.FileUtils.getInstance().fullPathFromRelativePath(plist);
@@ -153,7 +155,7 @@ cc.AnimationCache = cc.Class.extend(/** @lends cc.AnimationCache# */{
                 frames.push(animFrame);
             }
 
-            if (frames.length == 0) {
+            if (frames.length === 0) {
                 cc.log("cocos2d: cc.AnimationCache: None of the frames for animation '" + key
                     + "' were found in the cc.SpriteFrameCache. Animation is not being added to the Animation Cache.");
                 continue;
@@ -171,7 +173,7 @@ cc.AnimationCache = cc.Class.extend(/** @lends cc.AnimationCache# */{
 
         for (var key in animations) {
             var animationDict = animations[key];
-            var loops = parseInt(animationDict["loops"]) || 0;
+            var loops = parseInt(animationDict["loops"]) || 1;
             var restoreOriginalFrame = (animationDict["restoreOriginalFrame"] && animationDict["restoreOriginalFrame"] == true) ? true : false;
             var frameArray = animationDict["frames"];
 
@@ -234,7 +236,7 @@ cc.AnimationCache.purgeSharedAnimationCache = function () {
  * @return {cc.AnimationCache}
  */
 cc.AnimationCache.getInstance = function () {
-    if (cc.s_sharedAnimationCache == null) {
+    if (cc.s_sharedAnimationCache === null) {
         cc.s_sharedAnimationCache = new cc.AnimationCache();
         cc.s_sharedAnimationCache.init();
     }

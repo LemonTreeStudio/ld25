@@ -97,7 +97,7 @@ cc.ActionInterval = cc.FiniteTimeAction.extend(/** @lends cc.ActionInterval# */{
      */
     startWithTarget:function (target) {
         //this._super(target);
-        cc.Action.prototype.startWithTarget.call(this, target)
+        cc.Action.prototype.startWithTarget.call(this, target);
         this._elapsed = 0;
         this._firstTick = true;
     },
@@ -169,10 +169,7 @@ cc.Sequence = cc.ActionInterval.extend(/** @lends cc.Sequence# */{
 
         var one = actionOne.getDuration();
         var two = actionTwo.getDuration();
-        if (isNaN(one) || isNaN(two)) {
-            console.log(actionOne);
-            console.log(actionTwo);
-        }
+
         var d = actionOne.getDuration() + actionTwo.getDuration();
         this.initWithDuration(d);
 
@@ -210,7 +207,6 @@ cc.Sequence = cc.ActionInterval.extend(/** @lends cc.Sequence# */{
         var new_t, found = 0;
         if (time < this._split) {
             // action[0]
-            //found = 0;
             new_t = (this._split) ? time / this._split : 1;
         } else {
             // action[1]
@@ -230,9 +226,14 @@ cc.Sequence = cc.ActionInterval.extend(/** @lends cc.Sequence# */{
             }
         }
 
-        if (this._last != found) {
+        // Last action found and it is done.
+        if(this._last == found && this._actions[found].isDone())
+            return;
+
+        // Last action found and it is done
+        if (this._last != found)
             this._actions[found].startWithTarget(this._target);
-        }
+
         this._actions[found].update(new_t);
         this._last = found;
     },
@@ -634,10 +635,9 @@ cc.RotateTo = cc.ActionInterval.extend(/** @lends cc.RotateTo# */{
      */
     initWithDuration:function (duration, deltaAngle) {
         if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-            this._dstAngle = deltaAngle;
+            this._dstAngle = deltaAngle || 0;
             return true;
         }
-
         return false;
     },
 
@@ -648,22 +648,17 @@ cc.RotateTo = cc.ActionInterval.extend(/** @lends cc.RotateTo# */{
         cc.ActionInterval.prototype.startWithTarget.call(this, target);
 
         this._startAngle = target.getRotation();
-
-        if (this._startAngle > 0) {
+        if (this._startAngle > 0)
             this._startAngle = this._startAngle % 360.0;
-        }
-        else {
+        else
             this._startAngle = this._startAngle % 360.0;
-        }
 
         this._diffAngle = this._dstAngle - this._startAngle;
-        if (this._diffAngle > 180) {
+        if (this._diffAngle > 180)
             this._diffAngle -= 360;
-        }
 
-        if (this._diffAngle < -180) {
+        if (this._diffAngle < -180)
             this._diffAngle += 360;
-        }
     },
 
     /**
@@ -677,9 +672,8 @@ cc.RotateTo = cc.ActionInterval.extend(/** @lends cc.RotateTo# */{
      * @param {Number} time time in seconds
      */
     update:function (time) {
-        if (this._target) {
+        if (this._target)
             this._target.setRotation(this._startAngle + this._diffAngle * time);
-        }
     }
 });
 
@@ -1151,21 +1145,6 @@ cc.JumpTo.create = function (duration, position, height, jumps) {
     return jumpTo;
 };
 
-/**
- * Bezier configuration structure
- * @class
- * @extends cc.Class
- */
-cc.BezierConfig = cc.Class.extend(/** @lends cc.BezierConfig# */{
-    /**
-     * Constructor
-     */
-    ctor:function () {
-        this.endPosition = cc.p(0, 0);
-        this.controlPoint_1 = cc.p(0, 0);
-        this.controlPoint_2 = cc.p(0, 0);
-    }
-});
 
 /**
  * @function
@@ -1190,7 +1169,7 @@ cc.bezierat = function (a, b, c, d, t) {
 cc.BezierBy = cc.ActionInterval.extend(/** @lends cc.BezierBy# */{
     /**
      * @param {Number} t time in seconds
-     * @param {cc.BezierConfig} c
+     * @param {Array} c Array of points
      * @return {Boolean}
      */
     initWithDuration:function (t, c) {
@@ -1198,7 +1177,6 @@ cc.BezierBy = cc.ActionInterval.extend(/** @lends cc.BezierBy# */{
             this._config = c;
             return true;
         }
-
         return false;
     },
 
@@ -1216,14 +1194,14 @@ cc.BezierBy = cc.ActionInterval.extend(/** @lends cc.BezierBy# */{
     update:function (time) {
         if (this._target) {
             var xa = 0;
-            var xb = this._config.controlPoint_1.x;
-            var xc = this._config.controlPoint_2.x;
-            var xd = this._config.endPosition.x;
+            var xb = this._config[0].x;
+            var xc = this._config[1].x;
+            var xd = this._config[2].x;
 
             var ya = 0;
-            var yb = this._config.controlPoint_1.y;
-            var yc = this._config.controlPoint_2.y;
-            var yd = this._config.endPosition.y;
+            var yb = this._config[0].y;
+            var yc = this._config[1].y;
+            var yd = this._config[2].y;
 
             var x = cc.bezierat(xa, xb, xc, xd, time);
             var y = cc.bezierat(ya, yb, yc, yd, time);
@@ -1235,11 +1213,10 @@ cc.BezierBy = cc.ActionInterval.extend(/** @lends cc.BezierBy# */{
      * @return {cc.ActionInterval}
      */
     reverse:function () {
-        var r = new cc.BezierConfig();
-
-        r.endPosition = cc.pNeg(this._config.endPosition);
-        r.controlPoint_1 = cc.pAdd(this._config.controlPoint_2, cc.pNeg(this._config.endPosition));
-        r.controlPoint_2 = cc.pAdd(this._config.controlPoint_1, cc.pNeg(this._config.endPosition));
+        var r = [
+            cc.pAdd(this._config[1], cc.pNeg(this._config[2]) ),
+            cc.pAdd(this._config[0], cc.pNeg(this._config[2]) ),
+            cc.pNeg(this._config[2]) ];
 
         return cc.BezierBy.create(this._duration, r);
     },
@@ -1248,22 +1225,18 @@ cc.BezierBy = cc.ActionInterval.extend(/** @lends cc.BezierBy# */{
      * Constructor
      */
     ctor:function () {
-        this._config = new cc.BezierConfig();
+        this._config = [];
         this._startPosition = cc.p(0, 0);
     }
 });
 
 /**
  * @param {Number} t time in seconds
- * @param {cc.BezierConfig} c
+ * @param {Array} c Array of points
  * @return {cc.BezierBy}
  * @example
  * // example
- * var bezier = new cc.BezierConfig();
- * bezier.controlPoint_1 = cc.p(0, windowSize.height / 2);
- * bezier.controlPoint_2 = cc.p(300, -windowSize.height / 2);
- * bezier.endPosition = cc.p(300, 100);
- *
+ * var bezier = [cc.p(0, windowSize.height / 2), cc.p(300, -windowSize.height / 2), cc.p(300, 100)];
  * var bezierForward = cc.BezierBy.create(3, bezier);
  *
  */
@@ -1280,27 +1253,39 @@ cc.BezierBy.create = function (t, c) {
  * @extends cc.BezierBy
  */
 cc.BezierTo = cc.BezierBy.extend(/** @lends cc.BezierTo# */{
+    _toConfig:null,
+    /**
+     * @param {Number} t time in seconds
+     * @param {Array} c Array of points
+     * @return {Boolean}
+     */
+    initWithDuration:function (t, c) {
+        if(cc.BezierBy.prototype.initWithDuration.call(this, t, c)){
+            this._toConfig = [];
+            this._toConfig[0] = cc.p(c[0].x, c[0].y);
+            this._toConfig[1] = cc.p(c[1].x, c[1].y);
+            this._toConfig[2] = cc.p(c[2].x, c[2].y);
+            return true;
+        }
+        return false;
+    },
     /**
      * @param {cc.Node} target
      */
     startWithTarget:function (target) {
         cc.BezierBy.prototype.startWithTarget.call(this, target);
-        this._config.controlPoint_1 = cc.pSub(this._config.controlPoint_1, this._startPosition);
-        this._config.controlPoint_2 = cc.pSub(this._config.controlPoint_2, this._startPosition);
-        this._config.endPosition = cc.pSub(this._config.endPosition, this._startPosition);
+        this._config[0] = cc.pSub(this._toConfig[0], this._startPosition);
+        this._config[1] = cc.pSub(this._toConfig[1], this._startPosition);
+        this._config[2] = cc.pSub(this._toConfig[2], this._startPosition);
     }
 });
 /**
  * @param {Number} t
- * @param {cc.BezierConfig} c
+ * @param {Array} c array of points
  * @return {cc.BezierTo}
  * @example
  * // example
- *  var bezier = new cc.BezierConfig();
- * bezier.controlPoint_1 = cc.p(100, windowSize.height / 2);
- * bezier.controlPoint_2 = cc.p(200, -windowSize.height / 2);
- * bezier.endPosition = cc.p(240, 160);
- *
+ * var bezier = [cc.p(0, windowSize.height / 2), cc.p(300, -windowSize.height / 2), cc.p(300, 100)];
  * var bezierTo = cc.BezierTo.create(2, bezier);
  */
 cc.BezierTo.create = function (t, c) {
@@ -1323,15 +1308,12 @@ cc.ScaleTo = cc.ActionInterval.extend(/** @lends cc.ScaleTo# */{
      * @param {Number} sy
      * @return {Boolean}
      */
-    initWithDuration:function (duration, sx, sy)//function overload here
-    {
+    initWithDuration:function (duration, sx, sy) { //function overload here
         if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
             this._endScaleX = sx;
             this._endScaleY = (sy != null) ? sy : sx;
-
             return true;
         }
-
         return false;
     },
 
@@ -1339,7 +1321,6 @@ cc.ScaleTo = cc.ActionInterval.extend(/** @lends cc.ScaleTo# */{
      * @param {cc.Node} target
      */
     startWithTarget:function (target) {
-        //this._super(target);
         cc.ActionInterval.prototype.startWithTarget.call(this, target);
         this._startScaleX = target.getScaleX();
         this._startScaleY = target.getScaleY();
@@ -1351,11 +1332,8 @@ cc.ScaleTo = cc.ActionInterval.extend(/** @lends cc.ScaleTo# */{
      * @param {Number} time
      */
     update:function (time) {
-        if (this._target) {
+        if (this._target)
             this._target.setScale(this._startScaleX + this._deltaX * time, this._startScaleY + this._deltaY * time);
-            //this._target.setScaleX(this._startScaleX + this._deltaX * time);
-            //this._target.setScaleY(this._startScaleY + this._deltaY * time);
-        }
     },
     _scaleX:1,
     _scaleY:1,
@@ -1379,14 +1357,12 @@ cc.ScaleTo = cc.ActionInterval.extend(/** @lends cc.ScaleTo# */{
  * // It scales to 0.5 in x and 2 in Y
  * var actionTo = cc.ScaleTo.create(2, 0.5, 2);
  */
-cc.ScaleTo.create = function (duration, sx, sy)//function overload
-{
+cc.ScaleTo.create = function (duration, sx, sy){ //function overload
     var scaleTo = new cc.ScaleTo();
-    if (sy) {
+    if (sy)
         scaleTo.initWithDuration(duration, sx, sy);
-    } else {
+    else
         scaleTo.initWithDuration(duration, sx);
-    }
 
     return scaleTo;
 };
@@ -1430,11 +1406,9 @@ cc.ScaleBy.create = function (duration, sx, sy) {
     var scaleBy = new cc.ScaleBy();
     if (arguments.length == 3) {
         scaleBy.initWithDuration(duration, sx, sy);
-    }
-    else {
+    } else {
         scaleBy.initWithDuration(duration, sx);
     }
-
     return scaleBy;
 };
 
@@ -1453,7 +1427,6 @@ cc.Blink = cc.ActionInterval.extend(/** @lends cc.Blink# */{
             this._times = blinks;
             return true;
         }
-
         return false;
     },
 
@@ -1468,13 +1441,24 @@ cc.Blink = cc.ActionInterval.extend(/** @lends cc.Blink# */{
         }
     },
 
+    startWithTarget:function(target){
+        this._super(target);
+        this._originalState = target.isVisible();
+    },
+
+    stop:function(){
+        this._target.setVisible(this._originalState);
+        this._super();
+    },
+
     /**
      * @return {cc.ActionInterval}
      */
     reverse:function () {
         return cc.Blink.create(this._duration, this._times);
     },
-    _times:0
+    _times:0,
+    _originalState:false
 });
 /**
  * @param {Number} duration  duration in seconds
@@ -1487,7 +1471,6 @@ cc.Blink = cc.ActionInterval.extend(/** @lends cc.Blink# */{
 cc.Blink.create = function (duration, blinks) {
     var blink = new cc.Blink();
     blink.initWithDuration(duration, blinks);
-
     return blink;
 };
 
@@ -1522,9 +1505,7 @@ cc.FadeIn = cc.ActionInterval.extend(/** @lends cc.FadeIn# */{
  */
 cc.FadeIn.create = function (duration) {
     var action = new cc.FadeIn();
-
     action.initWithDuration(duration);
-
     return action;
 };
 
@@ -1582,7 +1563,6 @@ cc.FadeTo = cc.ActionInterval.extend(/** @lends cc.FadeTo# */{
             this._toOpacity = opacity;
             return true;
         }
-
         return false;
     },
 
@@ -1941,7 +1921,7 @@ cc.Animate = cc.ActionInterval.extend(/** @lends cc.Animate# */{
     },
 
     /**
-     * @param {cc.Node} target
+     * @param {cc.Sprite} target
      */
     startWithTarget:function (target) {
         //this._super(target);
@@ -1975,20 +1955,13 @@ cc.Animate = cc.ActionInterval.extend(/** @lends cc.Animate# */{
 
         var frames = this._animation.getFrames();
         var numberOfFrames = frames.length;
-        var frameToDisplay = null;
-
         for (var i = this._nextFrame; i < numberOfFrames; i++) {
-            var splitTime = this._splitTimes[i];
-
-            if (splitTime <= time) {
-                var frame = frames[i];
-                frameToDisplay = frame.getSpriteFrame();
-                this._target.setDisplayFrame(frameToDisplay);
-
-                var dict = frame.getUserInfo();
-                if (dict) {
+            if (this._splitTimes[i] <= time) {
+                this._target.setDisplayFrame(frames[i].getSpriteFrame());
+                //var dict = frame.getUserInfo();
+                //if (dict) {
                     //TODO: [[NSNotificationCenter defaultCenter] postNotificationName:CCAnimationFrameDisplayedNotification object:target_ userInfo:dict];
-                }
+                //}
                 this._nextFrame = i + 1;
                 break;
             }

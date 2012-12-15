@@ -122,6 +122,9 @@ if (!window.console) {
     };
 }
 
+
+cc.isAddedHiddenEvent = false;
+
 /**
  * <p>
  *   setup game main canvas,renderContext,gameDiv and drawingUtil with argument  <br/>
@@ -148,24 +151,34 @@ if (!window.console) {
 cc.setup = function (el, width, height) {
     var element = cc.$(el) || cc.$('#' + el);
     if (element.tagName == "CANVAS") {
+        width = width || element.width;
+        height = height || element.height;
+
         //it is already a canvas, we wrap it around with a div
         cc.container = cc.$new("DIV");
         cc.canvas = element;
         cc.canvas.parentNode.insertBefore(cc.container, cc.canvas);
         cc.canvas.appendTo(cc.container);
-        cc.container.style.width = (width || cc.canvas.width || 480) + "px";
-        cc.container.style.height = (height || cc.canvas.height || 320) + "px";
+        cc.container.style.width = (width || 480) + "px";
+        cc.container.style.height = (height || 320) + "px";
         cc.container.setAttribute('id', 'Cocos2dGameContainer');
-    }
-    else {//we must make a new canvas and place into this element
+        cc.canvas.setAttribute("width", width || 480);
+        cc.canvas.setAttribute("height", height || 320);
+    } else {//we must make a new canvas and place into this element
         if (element.tagName != "DIV") {
             cc.log("Warning: target element is not a DIV or CANVAS");
         }
+        width = width || parseInt(element.style.width);
+        height = height || parseInt(element.style.height);
+
         cc.canvas = cc.$new("CANVAS");
         cc.canvas.addClass("gameCanvas");
         cc.canvas.setAttribute("width", width || 480);
         cc.canvas.setAttribute("height", height || 320);
         cc.container = element;
+        element.appendChild(cc.canvas);
+        cc.container.style.width = (width || 480) + "px";
+        cc.container.style.height = (height || 320) + "px";
     }
     cc.container.style.position = 'relative';
     cc.container.style.overflow = 'hidden';
@@ -188,7 +201,36 @@ cc.setup = function (el, width, height) {
      }
      }, true);
      */
+
+    var hidden, visibilityChange;
+    if (typeof document.hidden !== "undefined") {
+        hidden = "hidden";
+        visibilityChange = "visibilitychange";
+    } else if (typeof document.mozHidden !== "undefined") {
+        hidden = "mozHidden";
+        visibilityChange = "mozvisibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+        visibilityChange = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+        visibilityChange = "webkitvisibilitychange";
+    }
+
+    function handleVisibilityChange() {
+        if (!document[hidden])
+            cc.Director.getInstance()._resetLastUpdate();
+    }
+
+    if (typeof document.addEventListener === "undefined" ||
+        typeof hidden === "undefined") {
+        cc.isAddedHiddenEvent = false;
+    } else {
+        cc.isAddedHiddenEvent = true;
+        document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    }
 };
+
 
 /**
  * Run main loop of game engine
@@ -235,7 +277,7 @@ cc.Application = cc.Class.extend(/** @lends cc.Application# */{
             return 0;
         }
         // TODO, need to be fixed.
-        if (window.requestAnimFrame && this._animationInterval == 1/60) {
+        if (window.requestAnimFrame && this._animationInterval == 1 / 60) {
             var callback = function () {
                 cc.Director.getInstance().mainLoop();
                 window.requestAnimFrame(callback);

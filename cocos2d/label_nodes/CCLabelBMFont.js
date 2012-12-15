@@ -154,7 +154,7 @@ cc.BMFontConfiguration = cc.Class.extend(/** @lends cc.BMFontConfiguration# */{
     },
 
     _parseConfigFile:function (controlFile) {
-        var data = cc.SAXParser.shareParser().getList(controlFile);
+        var data = cc.SAXParser.getInstance().getList(controlFile);
         cc.Assert(data, "cc.BMFontConfiguration._parseConfigFile | Open file error.");
 
         // parse spacing / padding
@@ -493,6 +493,7 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
                     var img = new Image();
                     img.src = colorTexture.toDataURL();
                     this.setTexture(img);
+                    this.updateString(false);
                 }
             }
         }
@@ -527,7 +528,7 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
      *  init LabelBMFont
      */
     init:function () {
-        this.initWithString(null, null, null, null, null);
+        return this.initWithString(null, null, null, null, null);
     },
 
     /**
@@ -862,7 +863,6 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
             }
 
             this._string = str_new + String.fromCharCode(0);
-            console.log(this._string)
             this.updateString(true);
         }
 
@@ -902,9 +902,10 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
                         for (var j = 0; j < line_length; j++) {
                             index = i + j + lineNumber;
                             if (index < 0) continue;
-
                             var characterSprite = this.getChildByTag(index);
-                            characterSprite.setPosition(cc.pAdd(characterSprite.getPosition(), cc.p(shift, 0)));
+                            if(characterSprite){
+                                characterSprite.setPosition(cc.pAdd(characterSprite.getPosition(), cc.p(shift, 0)));
+                            }
                         }
                     }
 
@@ -982,6 +983,9 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
             this._configuration = newConf;
 
             this.setTexture(cc.TextureCache.getInstance().addImage(this._configuration.getAtlasName()));
+            if (cc.renderContextType == cc.CANVAS) {
+                this._originalTexture = this.getTexture();
+            }
             this.createFontChars();
         }
     },
@@ -1045,6 +1049,13 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
  */
 cc.LabelBMFont.create = function (str, fntFile, width, alignment, imageOffset) {
     var ret = new cc.LabelBMFont();
+    if(arguments.length == 0){
+        if(ret && ret.init()){
+            return ret;
+        }
+        return null;
+    }
+
     if (ret && ret.initWithString(str, fntFile, width, alignment, imageOffset)) {
         return ret;
     }

@@ -38,7 +38,7 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      *  Check the loading status
      */
     isLoadedComplete:function () {
-        var loaderCache = cc.Loader.shareLoader();
+        var loaderCache = cc.Loader.getInstance();
         if (loaderCache.loadedResourceCount == loaderCache.resourceCount) {
             if (loaderCache.onload) {
                 loaderCache.timer = setTimeout(loaderCache.onload, 16);
@@ -50,7 +50,7 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
                 loaderCache.timer = setTimeout(loaderCache.onloading, 16);
             }
             else {
-                cc.LoaderScene.shareLoaderScene().draw();
+                cc.LoaderScene.getInstance().draw();
             }
             loaderCache.timer = setTimeout(loaderCache.isLoadedComplete, 16);
         }
@@ -61,7 +61,7 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      * @param {String} name
      * @example
      * //example
-     * cc.Loader.shareLoader().onResLoadingErr(name);
+     * cc.Loader.getInstance().onResLoadingErr(name);
      */
     onResLoadingErr:function (name) {
         cc.log("cocos2d:Failed loading resource: " + name);
@@ -71,7 +71,7 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      *Callback when a resource file loaded.
      * @example
      * //example
-     * cc.Loader.shareLoader().onResLoaded();
+     * cc.Loader.getInstance().onResLoaded();
      */
     onResLoaded:function () {
         this.loadedResourceCount++;
@@ -83,11 +83,11 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      * @return {Number}
      * @example
      * //example
-     * cc.log(cc.Loader.shareLoader().getProgressBar() + "%");
+     * cc.log(cc.Loader.getInstance().getProgressBar() + "%");
      */
     getProgressBar:function () {
         var per = this.loadedResourceCount / this.resourceCount;
-        per = parseInt(per * 100);
+        per = 0 | (per * 100);
         return per;
     },
 
@@ -95,7 +95,7 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      * status when resources loading success
      * @example
      *  //example
-     * cc.Loader.shareLoader().onload = function () {
+     * cc.Loader.getInstance().onload = function () {
      *      cc.AppController.shareAppController().didFinishLaunchingWithOptions();
      * };
      */
@@ -105,7 +105,7 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      *  status when res loading error
      * @example
      * //example
-     * cc.Loader.shareLoader().onerror = function () {
+     * cc.Loader.getInstance().onerror = function () {
      *      //do something
      * };
      */
@@ -115,11 +115,28 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      *  status when res loading
      * @example
      * //example
-     * cc.Loader.shareLoader().onloading = function () {
-     *       cc.LoaderScene.shareLoaderScene().draw();
+     * cc.Loader.getInstance().onloading = function () {
+     *       cc.LoaderScene.getInstance().draw();
      * };
      */
     onloading:undefined,
+
+    _registerFaceFont:function (fontRes) {
+        var srcArr = fontRes.srcArr;
+        if (fontRes.srcArr && srcArr.length > 0) {
+            var fontStyle = document.createElement("style");
+            fontStyle.type = "text/css";
+            document.body.appendChild(fontStyle);
+
+            var fontStr = "@font-face { font-family:" + fontRes.fontName + "; src:";
+            for (var i = 0; i < srcArr.length; i++) {
+                fontStr += "url('" + encodeURI(srcArr[i].src) + "') format('" + srcArr[i].type + "')";
+                fontStr += (i == (srcArr.length - 1)) ? ";" : ",";
+            }
+            fontStyle.textContent += fontStr + "};";
+        }
+        cc.Loader.getInstance().onResLoaded();
+    },
 
     /**
      * Pre-load the resources before engine start game main loop.
@@ -131,35 +148,41 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
      *               {type:"image", src:"hello.png"},
      *               {type:"tmx", src:"hello.tmx"}
      *     ]
-     * cc.Loader.shareLoader().preload(res);
+     * cc.Loader.getInstance().preload(res);
      */
     preload:function (res) {
         var sharedTextureCache = cc.TextureCache.getInstance();
         var sharedEngine = cc.AudioEngine.getInstance();
-        var shareParser = cc.SAXParser.shareParser();
+        var sharedParser = cc.SAXParser.getInstance();
+        var sharedFileUtils = cc.FileUtils.getInstance();
 
+        this.loadedResourceCount = 0;
+        this.resourceCount = res.length;
         for (var i = 0; i < res.length; i++) {
             switch (res[i].type) {
                 case "image":
                     sharedTextureCache.addImage(res[i].src);
-                    this.resourceCount += 1;
                     break;
                 case "bgm":
-                    sharedEngine.preloadBackgroundMusic(res[i].src);
-                    this.resourceCount += 1;
+                    sharedEngine.preloadMusic(res[i].src);
                     break;
                 case "effect":
                     sharedEngine.preloadEffect(res[i].src);
-                    this.resourceCount += 1;
                     break;
                 case "plist":
                 case "tmx":
                 case "fnt":
-                    shareParser.preloadPlist(res[i].src);
-                    this.resourceCount += 1;
+                    sharedParser.preloadPlist(res[i].src);
                     break;
                 case "tga":
                     //cc.log("cocos2d:not implemented yet")
+                    break;
+                case "ccbi":
+                case "binary":
+                    sharedFileUtils.preloadBinaryFileData(res[i].src);
+                    break;
+                case "face-font":
+                    this._registerFaceFont(res[i]);
                     break;
                 default:
                     throw "cocos2d:unknow type : " + res[i].type;
@@ -174,12 +197,13 @@ cc.Loader = cc.Class.extend(/**  @lends cc.Loader# */{
  * Share Loader
  * @return {cc.Loader}
  */
-cc.Loader.shareLoader = function () {
-    if (!cc.shareLoader) {
-        cc.shareLoader = new cc.Loader();
+cc.Loader.getInstance = function () {
+    if (!this._instance) {
+        this._instance = new cc.Loader();
     }
-    return cc.shareLoader;
+    return this._instance;
 };
+cc.Loader._instance = null;
 
 /**
  * Default loading screen, you can customize the loading screen.
@@ -213,7 +237,7 @@ cc.LoaderScene = cc.Class.extend(/**  @lends cc.LoaderScene# */{
         cc.renderContext.fillStyle = "#b2b4b3";
         cc.renderContext.font = 'Bold 12px Verdana';
         cc.renderContext.textAlign = 'left';
-        cc.drawingUtil.fillText("Loading " + cc.Loader.shareLoader().getProgressBar() + "%", logoWidth + 30, logoHeight - 15);
+        cc.drawingUtil.fillText("Loading " + cc.Loader.getInstance().getProgressBar() + "%", logoWidth + 30, logoHeight - 15);
     }
 });
 
@@ -221,9 +245,11 @@ cc.LoaderScene = cc.Class.extend(/**  @lends cc.LoaderScene# */{
  * Shared loader scene
  * @return {cc.LoaderScene}
  */
-cc.LoaderScene.shareLoaderScene = function () {
-    if (!cc.shareLoaderScene) {
-        cc.shareLoaderScene = new cc.LoaderScene();
+cc.LoaderScene.getInstance = function () {
+    if (!this._instance) {
+        this._instance = new cc.LoaderScene();
     }
-    return cc.shareLoaderScene;
+    return this._instance;
 };
+
+cc.LoaderScene._instance = null;

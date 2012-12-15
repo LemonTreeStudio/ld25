@@ -33,7 +33,7 @@
  * @constant
  * @type String
  */
-cc.ENGINE_VERSION = "Cocos2d-html5-v2.0.0";
+cc.ENGINE_VERSION = "Cocos2d-html5-v2.1.0";
 
 /**
  * <p>
@@ -274,7 +274,7 @@ cc.DEFAULT_ENGINE = cc.ENGINE_VERSION + "-canvas";
 /* Runtime information  */
 cc.config = {
     'os' : navigator.appVersion,
-    'deviceType' : 'browser',
+    'platform' : 'browser',
     'engine' : 'cocos2d-html5/canvas',
     'arch' : 'web',
     'version' : cc.ENGINE_VERSION,
@@ -288,4 +288,4 @@ cc.dumpConfig = function()
 {
     for( i in cc.config )
         cc.log( i + " = " + cc.config[i] );
-}
+};
