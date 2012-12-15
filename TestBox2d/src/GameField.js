@@ -1,13 +1,72 @@
 var PTM_RATIO = 32.0;
+var kMoveLeft = 1;
+var kMoveRight = 2;
+var kStop = 0;
 
-cc.MySprite = cc.Sprite.extend({
+
+cc.Player = cc.Sprite.extend({
     _typeObject:0,
+    velocity:cc.PointMake(0, 0),
+    desiredPosition:cc.PointMake(0, 0),
+    onGround:false,
+    moveType:kStop,
+    mightAsWellJump:false,
     /**
      * Constructor
      */
     ctor:function () {
             this._super();
             this._typeObject = 1;
+            this.velocity = cc.PointMake(0, 0);
+            this.onGround = false;
+            this.moveType = kStop;
+            this.mightAsWellJump = false;
+    },
+
+    update:function (dt) {
+        var jumpForce = cc.PointMake(0.0, 310.0);
+        var jumpCutoff = 150.0;
+    
+        if (this.mightAsWellJump && this.onGround) {
+            this.velocity = cc.pAdd(this.velocity, jumpForce);
+            //[[SimpleAudioEngine sharedEngine] playEffect:@"jump.wav"];
+        } 
+        else if (!this.mightAsWellJump && this.velocity.y > jumpCutoff) {
+            this.velocity = cc.PointMake(this.velocity.x, jumpCutoff);
+        }
+    
+        var gravity = cc.PointMake(0.0, -450.0);
+        var gravityStep = cc.pMult(gravity, dt);
+        
+        this.velocity = cc.PointMake(this.velocity.x * 0.90, this.velocity.y); //2
+    
+        if(this.moveType == kMoveRight) {
+            var forwardMove = cc.PointMake(800.0, 0.0);
+            var forwardStep = cc.pMult(forwardMove, dt);
+            this.velocity = cc.pAdd(this.velocity, forwardStep);
+        }
+        else if(this.moveType == kMoveLeft) {
+            var forwardMove = cc.PointMake(-800.0, 0.0);
+            var forwardStep = cc.pMult(forwardMove, dt);
+            this.velocity = cc.pAdd(this.velocity, forwardStep);
+        }
+    
+        var minMovement = cc.PointMake(-120.0, -450.0);
+        var maxMovement = cc.PointMake(120.0, 250.0);
+        this.velocity = cc.pClamp(this.velocity, minMovement, maxMovement);
+    
+        this.velocity = cc.pAdd(this.velocity, gravityStep);
+    
+        var stepVelocity = cc.pMult(this.velocity, dt);
+    
+        this.desiredPosition = cc.pAdd(this.getPosition(), stepVelocity);
+    },
+
+    collisionBoundingBox:function () {
+        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 0);
+        var diff = cc.pSub(this.desiredPosition, this.getPosition());
+        var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
+        return returnBoundingBox;
     },
 
     /**
@@ -105,7 +164,7 @@ cc.MySprite = cc.Sprite.extend({
  * //create a sprite with a sprite frame
  * var sprite = cc.Sprite.createWithSpriteFrameName('rossini_dance_01.png');
  */
-cc.MySprite.createWithSpriteFrameName = function (spriteFrame) {
+cc.Player.createWithSpriteFrameName = function (spriteFrame) {
     if (typeof(spriteFrame) == 'string') {
         var pFrame = cc.SpriteFrameCache.getInstance().getSpriteFrame(spriteFrame);
         if (pFrame) {
@@ -115,19 +174,21 @@ cc.MySprite.createWithSpriteFrameName = function (spriteFrame) {
             return null;
         }
     }
-    var sprite = new cc.MySprite();
+    var sprite = new cc.Player();
     if (sprite && sprite.initWithSpriteFrame(spriteFrame)) {
         return sprite;
     }
     return null;
 };
 
-
 var GameField = cc.Layer.extend(
 {
-    world: null,
-    groundBody:null,
-    
+    map:null,
+    player:null,
+    walls:null,
+    hazards:null,
+    gameOver:null,
+
     ctor:function () {
         //cc.associateWithNative( this, cc.Layer );
     },
@@ -135,109 +196,34 @@ var GameField = cc.Layer.extend(
     init:function () 
     {
         var bRet = false;
+        gameOver = false;
+
         if (this._super) 
         {
             var screenSize = cc.Director.getInstance().getWinSize();
-
-            //Box2d initialization
-            var b2Vec2 = Box2D.Common.Math.b2Vec2
-            , b2BodyDef = Box2D.Dynamics.b2BodyDef
-            , b2Body = Box2D.Dynamics.b2Body
-            , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-            , b2World = Box2D.Dynamics.b2World
-            , b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-            , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-            , b2ContactListener = Box2D.Dynamics.b2ContactListener;            
 
             // var back = cc.Sprite.create(s_background);
             // back.setAnchorPoint(cc.PointZero());
             // back.setPosition(cc.PointZero());
             // this.addChild(back, -10);
 
-            var map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/orthogonal-test3.tmx");
-            this.addChild(map, 10, 123);
-
-            map.setScale(1.0);
-            map.setAnchorPoint(cc.p(0.5, 0.5));
-            map.setPosition(cc.p(500, 130));
-
-
-            // Construct a world object, which will hold and simulate the rigid bodies.
-            this.world = new b2World(new b2Vec2(0, 10), true);
-            this.world.SetContinuousPhysics(true);
-            
-             //setup debug draw
-            // var debugDraw = new b2DebugDraw();
-            // debugDraw.SetSprite(document.getElementById("gameCanvas").getContext("2d"));
-            // debugDraw.SetDrawScale(PTM_RATIO);
-            // debugDraw.SetFillAlpha(0.3);
-            // debugDraw.SetLineThickness(1.0);
-            // debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-            // this.world.SetDebugDraw(debugDraw);
-
-            //setup contact listener
-            var listener = new b2ContactListener;
-            listener. BeginContact = function(contact) 
-            {
-                // var obj1 = contact.GetFixtureA().GetBody().GetUserData();                
-                // var obj2 = contact.GetFixtureB().GetBody().GetUserData();
-
-                // if((obj1 instanceof cc.MySprite) && (obj1._typeObject == 1)) 
-                // {
-                //     var fix = contact.GetFixtureA();
-                //     if(fix.m_id == 1)
-                //     {
-                //     }
-                // }
-                // else if((obj2 instanceof cc.MySprite) && (obj2._typeObject == 1)) 
-                // {
-                //     var fix = contact.GetFixtureB();
-                //     if(fix.m_id == 1)
-                //     {
-                //     }
-                // }
-            }
-            listener. EndContact = function(contact) 
-            {
-            }
-            this.world.SetContactListener(listener);
-
-            // Define the ground body.
-            var fixDef = new b2FixtureDef;
-            fixDef.density = 1.0;
-            fixDef.friction = 0.5;
-            fixDef.restitution = 0.2;
-
-            var groundBodyDef = new b2BodyDef;
-            groundBodyDef.position.Set(0, 0); // bottom-left corner
-            this.groundBody = this.world.CreateBody(groundBodyDef);
-
-            var bodyDef = new b2BodyDef;
-
-            //create ground
-            bodyDef.type = b2Body.b2_staticBody;
-            fixDef.shape = new b2PolygonShape;
-            fixDef.shape.SetAsBox(screenSize.width / 2 / PTM_RATIO, 2 / PTM_RATIO);
-            // upper
-            bodyDef.position.Set(screenSize.width / 2 / PTM_RATIO, -screenSize.height / PTM_RATIO);
-            this.world.CreateBody(bodyDef).CreateFixture(fixDef);
-            // bottom
-            bodyDef.position.Set(screenSize.width / 2 / PTM_RATIO, 1 / PTM_RATIO);
-            this.world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-            fixDef.shape.SetAsBox(2 / PTM_RATIO, screenSize.height / 2 / PTM_RATIO);
-            // left
-            bodyDef.position.Set(0, -screenSize.height / 2 / PTM_RATIO);
-            this.world.CreateBody(bodyDef).CreateFixture(fixDef);
-            // right
-            bodyDef.position.Set(screenSize.width / PTM_RATIO, -screenSize.height / 2 / PTM_RATIO);
-            this.world.CreateBody(bodyDef).CreateFixture(fixDef);
-
             // Load atlas with sprites
             cc.SpriteFrameCache.getInstance().addSpriteFrames(s_objects_plist, s_objects);
 
-            // Load Box2d shapes
-            cc.GB2ShapeCache.getInstance().addShapesWithFile(s_object_bodies_plist);
+            this.map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/orthogonal-test3.tmx");
+            this.addChild(this.map, 10, 123);
+
+            this.map.setScale(1.0);
+            this.map.setAnchorPoint(cc.p(0.0, 0.0));
+            this.map.setPosition(cc.p(0, 0));
+
+            this.player = cc.Player.createWithSpriteFrameName("char.png"); 
+            //this.player.setAnchorPoint(cc.p(0.0, 0.0));
+            this.player.setPosition(cc.PointMake(64 + 16, 96 + 16));
+            this.map.addChild(this.player, 15);
+
+            this.walls = this.map.getLayer("walls");
+            this.hazards = this.map.getLayer("hazards");
 
             // accept touch now!
             this.setTouchEnabled(true);
@@ -261,7 +247,6 @@ var GameField = cc.Layer.extend(
     {
         var touch = touches[0];
         var location = touch.getLocation();
-        this.createBodyAndSprite(location);
     },
 
     onTouchesMoved:function (touches, event) 
@@ -278,77 +263,222 @@ var GameField = cc.Layer.extend(
         {
             this.restartGame();           
         }
+        else if(e == cc.KEY.right) 
+        {
+            this.player.moveType = kMoveRight;
+        }
+        else if(e == cc.KEY.left) 
+        {
+            this.player.moveType = kMoveLeft;
+        }
+        else if(e == cc.KEY.space) 
+        {
+            this.player.mightAsWellJump = true;
+        }
     },
     
     onKeyUp:function (e) 
     {
+        if(e == cc.KEY.right) 
+        {
+            this.player.moveType = kStop;
+        }
+        else if(e == cc.KEY.left) 
+        {
+            this.player.moveType = kStop;
+        }
+        else if(e == cc.KEY.space) 
+        {
+            this.player.mightAsWellJump = false;
+        }
     },
 
     draw:function() {
-       this.world.DrawDebugData();
     },
 
     update:function (dt) {
-        //It is recommended that a fixed time step is used with Box2D for stability
-        //of the simulation, however, we are using a variable time step here.
-        //You need to make an informed choice, the following URL is useful
-        //http://gafferongames.com/game-physics/fix-your-timestep/
-        var velocityIterations = 8;
-        var positionIterations = 1;
+        if (gameOver) {
+            return;
+        }
+        this.player.update(dt);
+        this.checkForWin();
+        this.checkForAndResolveCollisions(this.player);
+        this.handleHazardCollisions(this.player);
+        this.setViewpointCenter(this.player.getPosition());
+    },
 
-        // Instruct the world to perform a single step of simulation. It is
-        // generally best to keep the time step and iterations fixed.
-        this.world.Step(dt, velocityIterations, positionIterations);
+    tileCoordForPosition:function (position) {
+        var x = Math.floor(position.x / this.map.getTileSize().width);
+        var levelHeightInPixels = this.map.getMapSize().height * this.map.getTileSize().height;
+        var y = Math.floor((levelHeightInPixels - position.y) / this.map.getTileSize().height);
+        return cc.PointMake(x, y);
+    },
 
-        //Iterate over the bodies in the physics world
-        for (var b = this.world.GetBodyList(); b; b = b.GetNext()) {
-            if (b.GetUserData() != null) {
-                //Synchronize the AtlasSprites position and rotation with the corresponding body
-                var myActor = b.GetUserData();
-                myActor.setPosition(cc.PointMake(b.GetPosition().x * PTM_RATIO, -b.GetPosition().y * PTM_RATIO));
-                myActor.setRotation(cc.RADIANS_TO_DEGREES(b.GetAngle()));
+    tileRectFromTileCoords:function (tileCoords) {
+        var levelHeightInPixels = this.map.getMapSize().height * this.map.getTileSize().height;
+        var origin = cc.PointMake(tileCoords.x * this.map.getTileSize().width, levelHeightInPixels - ((tileCoords.y + 1) * this.map.getTileSize().height));
+        return cc.RectMake(origin.x, origin.y, this.map.getTileSize().width, this.map.getTileSize().height);
+    },
+
+    getSurroundingTilesAtPosition:function (position, layer) {
+
+        var plPos = this.tileCoordForPosition(position); //1    
+        var gids = []; //2
+    
+        for (var i = 0; i < 9; i++) { //3
+            var c = i % 3;
+            var r =  Math.floor(i / 3);
+            var tilePos = cc.PointMake(plPos.x + (c - 1), plPos.y + (r - 1));
+        
+            if (tilePos.y > (this.map.getMapSize().height + 50)) {
+                //fallen in a hole
+                this.gameOver(0);
+                return null;
+            } 
+        
+            var tgid = layer.getTileGIDAt(tilePos); //4
+        
+            var tileRect = this.tileRectFromTileCoords(tilePos); //5
+        
+            var tileDict = {};
+            tileDict["gid"] = tgid;
+            tileDict["x"] = tileRect.origin.x;
+            tileDict["y"] = tileRect.origin.y;
+            tileDict["tilePos"] = tilePos;
+
+            cc.ArrayAppendObject(gids, tileDict);
+        }
+
+        cc.ArrayRemoveObjectAtIndex(gids, 4);
+
+        var obj1 = gids[0];        
+        var obj2 = gids[1];        
+        var obj3 = gids[2];        
+        var obj4 = gids[3];        
+        var obj5 = gids[4];        
+        var obj6 = gids[5];        
+        var obj7 = gids[6];        
+        var obj8 = gids[7];        
+
+        var gids2 = []; 
+        cc.ArrayAppendObject(gids2, obj7);
+        cc.ArrayAppendObject(gids2, obj2);
+        cc.ArrayAppendObject(gids2, obj4);
+        cc.ArrayAppendObject(gids2, obj5);
+        cc.ArrayAppendObject(gids2, obj1);
+        cc.ArrayAppendObject(gids2, obj3);
+        cc.ArrayAppendObject(gids2, obj6);
+        cc.ArrayAppendObject(gids2, obj8);
+
+        return gids2;
+    },
+
+    checkForAndResolveCollisions:function (p) {
+
+        if (gameOver) {
+            return;
+        }
+        var tiles = this.getSurroundingTilesAtPosition(p.getPosition(), this.walls); //1
+        p.onGround = false;
+
+        for (var i = 0; i < tiles.length; i++) {
+            var dic = tiles[i];
+            var pRect = p.collisionBoundingBox(); //3
+            var gid = parseInt(dic["gid"]); //4
+      
+            if (gid) {
+                var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height); //5
+
+                if (cc.rectIntersectsRect(pRect, tileRect)) {
+                    var intersection = cc.rectIntersection(pRect, tileRect);
+                    var tileIndx = cc.ArrayGetIndexOfObject(tiles, dic);
+
+                    if (tileIndx == 0) {
+                        //tile is directly below player
+                        p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + intersection.size.height);
+                        p.velocity = cc.PointMake(p.velocity.x, 0.0);
+                        p.onGround = true;
+                    } 
+                    else if (tileIndx == 1) {
+                        //tile is directly above player
+                        p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y - intersection.size.height);
+                        p.velocity = cc.PointMake(p.velocity.x, 0.0);
+                    } 
+                    else if (tileIndx == 2) {
+                        //tile is left of player
+                        p.desiredPosition = cc.PointMake(p.desiredPosition.x + intersection.size.width, p.desiredPosition.y);
+                    } 
+                    else if (tileIndx == 3) {
+                        //tile is right of player
+                        p.desiredPosition = cc.PointMake(p.desiredPosition.x - intersection.size.width, p.desiredPosition.y);
+                    } 
+                    else {
+                        if (intersection.size.width > intersection.size.height) {
+                            //tile is diagonal, but resolving collision vertially
+                            p.velocity = cc.PointMake(p.velocity.x, 0.0);
+                            var resolutionHeight;
+                            if (tileIndx > 5) {
+                                resolutionHeight = -intersection.size.height;
+                                p.onGround = true;
+                            } else {
+                                resolutionHeight = intersection.size.height;
+                            }                        
+                            p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + resolutionHeight );
+                        
+                        } 
+                        else {
+                            var resolutionWidth;
+                            if (tileIndx == 6 || tileIndx == 4) {
+                                resolutionWidth = intersection.size.width;
+                            } 
+                            else {
+                                resolutionWidth = -intersection.size.width;
+                            }
+                            p.desiredPosition = cc.PointMake(p.desiredPosition.x + resolutionWidth , p.desiredPosition.y);
+                        } 
+                    }  
+                }
+            }  
+        }
+        p.setPosition(p.desiredPosition); //8
+    },
+
+    handleHazardCollisions:function (p) {
+        var tiles = this.getSurroundingTilesAtPosition(p.getPosition(), this.hazards);
+        for (var dic in tiles) {
+            var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height);
+            var pRect = p.collisionBoundingBox();
+        
+            if (parseInt(dic["gid"]) && cc.RectIntersectsRect(pRect, tileRect)) {
+                this.gameOver(0);
             }
         }
     },
 
-    createBodyAndSprite:function (position) {
-        //cross_100х100.png
-        //gear_big.png
-        var spriteName = "gear_big.png";
-        var angle = 0;
-        var sprite = cc.MySprite.createWithSpriteFrameName(spriteName);
-        sprite._typeObject = 2;
-        this.addChild(sprite, 10);
+    gameOver:function (won) {
+        gameOver = true;
+        //this.restartGame();
+    },
 
-        var b2BodyDef = Box2D.Dynamics.b2BodyDef
-            , b2Body = Box2D.Dynamics.b2Body
-            , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-            , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+    checkForWin:function () {
+        if(this.player.getPosition().x > 3130.0) {
+            this.gameOver(1);
+        }
+    },
 
-        var bodyDef = new b2BodyDef();
-        bodyDef.type = b2Body.b2_dynamicBody;
-        bodyDef.position.Set(position.x / PTM_RATIO * 2, -position.y / PTM_RATIO * 2);
-        bodyDef.fixedRotation = false;
-        bodyDef.angle = cc.DEGREES_TO_RADIANS(-angle);
-        bodyDef.userData = sprite;
-        var body = this.world.CreateBody(bodyDef);
-        body.SetSleepingAllowed(false);
-
-        var shapeName = spriteName.replace(/.png/g,"");
-
-        // Add fixture and anchor pointfrom GB2ShapeCashe
-        cc.GB2ShapeCache.getInstance().addFixturesToBody(body, shapeName);
-        sprite.setAnchorPoint(cc.GB2ShapeCache.getInstance().anchorPointForShape(shapeName));
-
-        var myjoint = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
-        myjoint.bodyA = this.groundBody;
-        myjoint.bodyB = body;
-        myjoint.localAnchorA.Set(position.x / PTM_RATIO, -position.y / PTM_RATIO);
-        myjoint.enableMotor = true;
-        myjoint.maxMotorTorque = 5500;
-        myjoint.motorSpeed = -1;
-        myjoint.collideConnected = false;
-        this.world.CreateJoint(myjoint);
+    setViewpointCenter:function (position) {
+    
+        var winSize = cc.Director.getInstance().getWinSize();
+    
+        var x = Math.max(position.x, winSize.width / 2);
+        var y = Math.max(position.y, winSize.height / 2);
+        x = Math.min(x, (this.map.getMapSize().width * this.map.getTileSize().width) - winSize.width / 2);
+        y = Math.min(y, (this.map.getMapSize().height * this.map.getTileSize().height) - winSize.height/2);
+        var actualPosition = cc.PointMake(x, y);
+    
+        var centerOfView = cc.PointMake(winSize.width/2, winSize.height/2);
+        var viewPoint = cc.pSub(centerOfView, actualPosition);
+        this.map.setPosition(viewPoint); 
     },
 
     restartGame:function (pSender) 
@@ -365,7 +495,7 @@ GameField.create = function ()
     if (sg && sg.init()) 
     {
         return sg;
-    }
+    }                             
     return null;
 };
 

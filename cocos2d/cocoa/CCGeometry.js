@@ -448,6 +448,44 @@ cc.rectIntersection = function (rectA, rectB) {
     return intersection;
 };
 
+/**
+ * Inset `rect' by `(dx, dy)' -- i.e., offset its origin by `(dx, dy)', and
+ * decrease its size by `(2*dx, 2*dy)'.
+ * @function
+ * @param {cc.Rect} rectA
+ * @param {Number} dx
+ * @param {Number} dy
+ * @return {cc.Rect}
+ * Constructor
+ */
+cc.rectInset = function (rectA, dx, dy) {
+    var insection = cc.RectMake(
+        rectA.origin.x + dx,
+        rectA.origin.y + dy,
+        rectA.size.width - dx * 2.0,
+        rectA.size.height - dy * 2.0);
+    return insection;
+};
+
+/**
+ * Offset `rect' by `(dx, dy)'. 
+ * @function
+ * @param {Number} dx
+ * @param {Number} dy
+ * @return {cc.Rect}
+ * Constructor
+ */
+cc.rectOffset = function (rectA, dx, dy) {
+    var ofsection = cc.RectMake(
+        rectA.origin.x + dx,
+        rectA.origin.y + dy,
+        rectA.size.width,
+        rectA.size.height);
+    return ofsection;
+};
+
+
+
 //
 // Rect JSB compatibility
 // JSB uses:
