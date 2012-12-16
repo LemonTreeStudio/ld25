@@ -5,12 +5,12 @@
  </tileset>
  <layer name="walls" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3W0Q5AMAwF0H6HYNiTB///e0g0kcVstGbmnqTxIrW5CiIAAAAAAAD4m0mxl1XslbMn91lvR2ku1jmWaFiqf/ganEcj6OFmUGImqfYkzcO3zhIzSUGSR+iel5BJinfUXmwe67qqXcWu8YuZrHs1lDYHpvH9AD2+PNx58NWdZ0jzH1vqzVk48sZ8YBb9OI+W4uYhNCNnc8XGC/24pzmo0HmxfXKqjiA3M3Om53NAHwAA
+   H4sIAAAAAAAAA+2VWwqAIBBFZwUtICp7fPXR/rdXQYJIpuE4mt0Dgz8yOZ5uEQEAAAAAAAAA+BsbY6+FsVfJpJyzu9ZYL4u11sh81JT4GdpHH9HDdlCjE6mZYn24zlmjEwlifPjuvAYnEt8ok1Af57lao0LP+EUn56yKZD1oOP4fgA+XDzsPrsrxDnGSMwt35MgHsuhG+xgoLA++jDzlqrn2rC/66Z7qpnz7QvuUVCOB0tgBZlXlnUAfAAA=
   </data>
  </layer>
  <layer name="walls2" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3W3Q5AMAwF4Eb878qF939VhCWyKKO1zZwvadxIbY6CCAAAAAAAAP5mVOxlFHul7M19VttRmotxjjnq5+pevobNoxT0cDPIMZNQe5Lmwa0zx0xCkORxdc9zyCTEO2rPN49lXc2ufNf4xUyWvRYUNgdL4/sBerg83Hng6skzpPmPLRVzFo7EmA/MIs/mUdP6nNwtd0b6k3Otge7NHNfz6jzfPilVS5CaCZnDQX9AHwAA
+   H4sIAAAAAAAAA+2V3QqAIAxGR/QvBF30/q9aUkJIS8OlZt+B4c1YW8cVEQAAAAAAAACAv7EI1lKCtXLmzTmb4wz1oqyzRMYthpefYXzUATVsByU6iTVTqA+uzxKdxCDEh+udl+AkxjfqjK8P3Vd3Ct8ev+hEz1pRXA8Gif8HkIPzYe8DFynukCQpd+GKFPuBXeQxPlra78nTsHdkvMmdjpyZnu0cV9OV51snp+gJ5MYKune+aUAfAAA=
   </data>
  </layer>
  <layer name="hazards" width="100" height="20">
@@ -20,5 +20,38 @@
  </layer>
  <objectgroup name="enemies" width="100" height="20">
   <object x="682" y="533"/>
+  <object x="309" y="415"/>
+  <object x="379" y="375"/>
+  <object x="380" y="412"/>
+  <object x="269" y="391"/>
+  <object x="231" y="465"/>
+  <object x="162" y="433"/>
+  <object x="109" y="474"/>
+  <object x="91" y="554"/>
+  <object x="162" y="559"/>
+  <object x="279" y="562" width="1" height="1"/>
+  <object x="744" y="554"/>
+  <object x="492" y="271"/>
+  <object x="571" y="256"/>
+  <object x="336" y="333"/>
+  <object x="217" y="304" width="1"/>
+  <object x="196" y="343"/>
+  <object x="227" y="362" width="2" height="4"/>
+  <object x="270" y="280" width="25" height="29"/>
+  <object x="233" y="278" width="1" height="2"/>
+  <object x="144" y="306"/>
+  <object x="151" y="379"/>
+  <object x="193" y="401"/>
+  <object x="224" y="428" width="3"/>
+  <object x="387" y="377"/>
+  <object x="444" y="304" width="2"/>
+  <object x="457" y="268"/>
+  <object x="391" y="268"/>
+  <object x="335" y="247"/>
+  <object x="194" y="255"/>
+  <object x="125" y="258" height="3"/>
+  <object x="110" y="403" height="2"/>
+  <object x="307" y="493"/>
+  <object x="529" y="139"/>
  </objectgroup>
 </map>

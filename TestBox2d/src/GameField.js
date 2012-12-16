@@ -414,7 +414,7 @@ var GameField = cc.Layer.extend(
             for (var i = 0; i < enemies_obj.length; ++i) {
                 var enemy = cc.Enemy.createWithSpriteFrameName("char.png");
                 enemy.setPosition(cc.PointMake(enemies_obj[i].x, enemies_obj[i].y));
-                enemy.moveType = kMoveLeft;
+                enemy.moveType = kMoveRight;
                 this.map.addChild(enemy, 15);
                 cc.ArrayAppendObject(this.enemies, enemy);
             }
@@ -676,16 +676,14 @@ var GameField = cc.Layer.extend(
             } else {
                 // falling for enemyes
                 p.mightAsWellJump = false;
-                // chanse 1/3 for jump, left, or fall
                 var chanse = cc.RANDOM_MINUS1_1();
-                cc.log(chanse);
                 if (p._typeObject == 2) {
                     // falling
                     if (chanse < -0.33) {
                         //nothing but the blues
                     } else if (chanse < 0.33) {
                         // jump
-                        if (tileIndx == 7) {
+                        if (tileIndx == 5) {
                             if (p.moveType == kMoveLeft) {
                                 p.mightAsWellJump = true;
                             } else {
