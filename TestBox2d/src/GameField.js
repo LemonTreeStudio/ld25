@@ -4,6 +4,132 @@ var kMoveRight = 2;
 var kStop = 0;
 
 
+cc.MySprite = cc.Sprite.extend({
+    _typeObject:0,
+    /**
+     * Constructor
+     */
+    ctor:function () {
+            this._super();
+            this._typeObject = 1;
+            this._stateObject = 1;
+    },
+
+    /**
+     * HACK: optimization
+     */
+    SET_DIRTY_RECURSIVELY:function () {
+        if (this._batchNode && !this._recursiveDirty) {
+            this._recursiveDirty = true;
+            //this.setDirty(true);
+            this._dirty = true;
+            if (this._hasChildren)
+                this.setDirtyRecursively(true);
+        }
+    },
+
+    /**
+     * position setter (override cc.Node )
+     * @param {cc.Point} pos
+     * @override
+     */
+    setPosition:function (pos) {
+        cc.Node.prototype.setPosition.call(this, pos);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * Rotation setter (override cc.Node )
+     * @param {Number} rotation
+     * @override
+     */
+    setRotation:function (rotation) {
+        cc.Node.prototype.setRotation.call(this, rotation);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+        /**
+     * <p>The scale factor of the node. 1.0 is the default scale factor. <br/>
+     * It modifies the X and Y scale at the same time. (override cc.Node ) <p/>
+     * @param {Number} scale
+     * @override
+     */
+    setScale:function (scale, scaleY) {
+        cc.Node.prototype.setScale.call(this, scale, scaleY);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * VertexZ setter (override cc.Node )
+     * @param {Number} vertexZ
+     * @override
+     */
+    setVertexZ:function (vertexZ) {
+        cc.Node.prototype.setVertexZ.call(this, vertexZ);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * AnchorPoint setter  (override cc.Node )
+     * @param {cc.Point} anchor
+     * @override
+     */
+    setAnchorPoint:function (anchor) {
+        cc.Node.prototype.setAnchorPoint.call(this, anchor);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * visible setter  (override cc.Node )
+     * @param {Boolean} visible
+     * @override
+     */
+    setVisible:function (visible) {
+        cc.Node.prototype.setVisible.call(this, visible);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    setFlipX:function (flipX) {
+        cc.Sprite.prototype.setFlipX.call(this, flipX);
+        this.SET_DIRTY_RECURSIVELY();
+    }
+
+});
+
+/**
+ * Creates a sprite with a sprite frame.
+ * @param {cc.SpriteFrame|String} spriteFrame or spriteFrame name
+ * @return {cc.Sprite}
+ * @example
+ * //get a sprite frame
+ * var spriteFrame = cc.SpriteFrameCache.getInstance().spriteFrameByName("grossini_dance_01.png");
+ *
+ * //create a sprite with a sprite frame
+ * var sprite = cc.Sprite.createWithSpriteFrameName(spriteFrame);
+ *
+ * //create a sprite with a sprite frame
+ * var sprite = cc.Sprite.createWithSpriteFrameName('rossini_dance_01.png');
+ */
+cc.MySprite.createWithSpriteFrameName = function (spriteFrame) {
+    if (typeof(spriteFrame) == 'string') {
+        var pFrame = cc.SpriteFrameCache.getInstance().getSpriteFrame(spriteFrame);
+        if (pFrame) {
+            spriteFrame = pFrame;
+        } else {
+            cc.log("Invalid spriteFrameName: " + spriteFrame);
+            return null;
+        }
+    }
+    var sprite = new cc.MySprite();
+    if (sprite && sprite.initWithSpriteFrame(spriteFrame)) {
+        return sprite;
+    }
+    return null;
+};
+
+
+// 1111ßPlayer
+
 cc.Player = cc.Sprite.extend({
     _typeObject:0,
     velocity:cc.PointMake(0, 0),
@@ -11,6 +137,9 @@ cc.Player = cc.Sprite.extend({
     onGround:false,
     moveType:kStop,
     mightAsWellJump:false,
+    _isAnimationStarted:false,    
+    _myAnimation:null,
+
     /**
      * Constructor
      */
@@ -21,15 +150,46 @@ cc.Player = cc.Sprite.extend({
             this.onGround = false;
             this.moveType = kStop;
             this.mightAsWellJump = false;
+            this._isAnimationStarted = false;
+            this._myAnimation = null;
+},
+
+    initPlayerAnimation:function (type) {
+        var animFrames = [];
+        // set frame
+        var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame("hero_1.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("hero_2.png");
+
+        animFrames.push(frame0);
+        animFrames.push(frame1);
+        // animate
+        this._myAnimation = cc.Animation.create(animFrames, 0.2);
+    },
+
+    playPayerAnimation:function () {
+        if(this._isAnimationStarted == false)
+        {
+            this._isAnimationStarted = true;
+            var animate = cc.Animate.create(this._myAnimation);
+            this.runAction(cc.RepeatForever.create(animate));
+        }
+    },
+
+    stopPlayerAnimation:function () {
+        if(this._isAnimationStarted == true)
+        {
+            this.stopAllActions();
+            this._isAnimationStarted = false;
+        }
     },
 
     update:function (dt) {
-        var jumpForce = cc.PointMake(0.0, 350.0);
-        var jumpCutoff = 150.0;
+        var jumpForce = cc.PointMake(0.0, 310.0);
+        var jumpCutoff = 250.0;
     
         if (this.mightAsWellJump && this.onGround) {
             this.velocity = cc.pAdd(this.velocity, jumpForce);
-            //[[SimpleAudioEngine sharedEngine] playEffect:@"jump.wav"];
+            cc.AudioEngine.getInstance().playEffect(s_jumpEffect);
         } 
         else if (!this.mightAsWellJump && this.velocity.y > jumpCutoff) {
             this.velocity = cc.PointMake(this.velocity.x, jumpCutoff);
@@ -55,7 +215,7 @@ cc.Player = cc.Sprite.extend({
         }
     
         var minMovement = cc.PointMake(-120.0, -450.0);
-        var maxMovement = cc.PointMake(120.0, 260.0);
+        var maxMovement = cc.PointMake(120.0, 560.0);
         this.velocity = cc.pClamp(this.velocity, minMovement, maxMovement);
     
         this.velocity = cc.pAdd(this.velocity, gravityStep);
@@ -66,7 +226,7 @@ cc.Player = cc.Sprite.extend({
     },
 
     collisionBoundingBox:function () {
-        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 0);
+        var collisionBox = cc.rectInset(this.getBoundingBox(), 10, 4);
         var diff = cc.pSub(this.desiredPosition, this.getPosition());
         var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
         return returnBoundingBox;
@@ -193,6 +353,8 @@ cc.Enemy = cc.Sprite.extend({
     onGround:false,
     moveType:kStop,
     mightAsWellJump:false,
+    _isAnimationStarted:false,    
+    _myAnimation:null,
     /**
      * Constructor
      */
@@ -203,6 +365,40 @@ cc.Enemy = cc.Sprite.extend({
             this.onGround = false;
             this.moveType = kStop;
             this.mightAsWellJump = false;
+            _isAnimationStarted = false;
+            _myAnimation = null;
+
+    },
+
+    initEnemyAnimation:function (type) {
+        var animFrames = [];
+        // set frame
+        var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_1.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_2.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_3.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_4.png");
+
+        animFrames.push(frame0);
+        animFrames.push(frame1);
+        // animate
+        this._myAnimation = cc.Animation.create(animFrames, 0.2);
+    },
+
+    playEnemyAnimation:function () {
+        if(this._isAnimationStarted == false)
+        {
+            this._isAnimationStarted = true;
+            var animate = cc.Animate.create(this._myAnimation);
+            this.runAction(cc.RepeatForever.create(animate));
+        }
+    },
+
+    stopEnemyAnimation:function () {
+        if(this._isAnimationStarted == true)
+        {
+            this.stopAllActions();
+            this._isAnimationStarted = false;
+        }
     },
 
     update:function (dt) {
@@ -211,7 +407,6 @@ cc.Enemy = cc.Sprite.extend({
     
         if (this.mightAsWellJump && this.onGround) {
             this.velocity = cc.pAdd(this.velocity, jumpForce);
-            //[[SimpleAudioEngine sharedEngine] playEffect:@"jump.wav"];
         } 
         else if (!this.mightAsWellJump && this.velocity.y > jumpCutoff) {
             this.velocity = cc.PointMake(this.velocity.x, jumpCutoff);
@@ -370,6 +565,7 @@ var GameField = cc.Layer.extend(
     back:null,
     elementsCount:0,
     hidedCount:0,
+    listOfPictures:null,
 
     ctor:function () {
         //cc.associateWithNative( this, cc.Layer );
@@ -377,6 +573,7 @@ var GameField = cc.Layer.extend(
     
     init:function () 
     {
+        this.listOfPictures = [];
         var bRet = false;
         gameOver = false;
         hideMode = true;
@@ -403,26 +600,36 @@ var GameField = cc.Layer.extend(
             this.map.setAnchorPoint(cc.p(0.0, 0.0));
             this.map.setPosition(cc.p(0, 0));
 
-            this.player = cc.Player.createWithSpriteFrameName("char.png"); 
+            this.player = cc.Player.createWithSpriteFrameName("hero_1.png"); 
             //this.player.setAnchorPoint(cc.p(0.0, 0.0));
-            this.player.setPosition(cc.PointMake(64 + 16, 96 + 16));
+            this.player.setPosition(cc.PointMake(100, 180));
             this.map.addChild(this.player, 15);
+            this.player.initPlayerAnimation();
 
-            var enemies_tmx = this.map.getObjectGroup("enemies");
+            var enemies_tmx = this.map.getObjectGroup("objects");
             var enemies_obj = enemies_tmx.getObjects();
+            
 
             for (var i = 0; i < enemies_obj.length; ++i) {
-                var enemy = cc.Enemy.createWithSpriteFrameName("char.png");
-                enemy.setPosition(cc.PointMake(enemies_obj[i].x, enemies_obj[i].y));
-                enemy.moveType = kMoveRight;
-                this.map.addChild(enemy, 15);
-                cc.ArrayAppendObject(this.enemies, enemy);
+                if (enemies_obj[i].id == 100) {
+                    var enemy = cc.Enemy.createWithSpriteFrameName("rabbit_1.png");
+                    enemy.setPosition(cc.PointMake(enemies_obj[i].x, enemies_obj[i].y));
+                    enemy.moveType = kMoveRight;
+                    enemy.initEnemyAnimation();
+                    enemy.playEnemyAnimation();
+                    this.map.addChild(enemy, 15);
+                    cc.ArrayAppendObject(this.enemies, enemy);
+                }
             }
             
             this.walls = this.map.getLayer("walls");
             this.walls2 = this.map.getLayer("walls2");
             this.hazards = this.map.getLayer("hazards");
             elementsCount = this.walls2._children.length;
+
+            this.loadPictureObject();
+
+            cc.AudioEngine.getInstance().playMusic(s_bgMusic, true);
 
             // accept touch now!
             this.setTouchEnabled(true);
@@ -434,6 +641,7 @@ var GameField = cc.Layer.extend(
             this.setKeyboardEnabled(true);
 
             bRet = true;
+
         }
         return bRet;
     },
@@ -460,15 +668,18 @@ var GameField = cc.Layer.extend(
     {        
         if(e == cc.KEY.r)
         {
-            this.restartGame();           
+            this.restartGame();     
+//            this.finishGame();
         }
         else if(e == cc.KEY.right) 
         {
             this.player.moveType = kMoveRight;
+            this.player.playPayerAnimation();
         }
         else if(e == cc.KEY.left) 
         {
             this.player.moveType = kMoveLeft;
+            this.player.playPayerAnimation();
         }
         else if(e == cc.KEY.space) 
         {
@@ -485,10 +696,12 @@ var GameField = cc.Layer.extend(
         if(e == cc.KEY.right) 
         {
             this.player.moveType = kStop;
+            this.player.stopPlayerAnimation();
         }
         else if(e == cc.KEY.left) 
         {
             this.player.moveType = kStop;
+            this.player.stopPlayerAnimation();
         }
         else if(e == cc.KEY.space) 
         {
@@ -517,9 +730,15 @@ var GameField = cc.Layer.extend(
             this.enemies[i].update(dt);
             this.checkForAndResolveCollisions(this.enemies[i]);
         }
+
+        this.checkPictureObjects();
     },
 
     tileCoordForPosition:function (position) {
+        if (gameOver) {
+            return;
+        }
+        
         var x = Math.floor(position.x / this.map.getTileSize().width);
         var levelHeightInPixels = this.map.getMapSize().height * this.map.getTileSize().height;
         var y = Math.floor((levelHeightInPixels - position.y) / this.map.getTileSize().height);
@@ -527,13 +746,19 @@ var GameField = cc.Layer.extend(
     },
 
     tileRectFromTileCoords:function (tileCoords) {
+        if (gameOver) {
+            return;
+        }
+
         var levelHeightInPixels = this.map.getMapSize().height * this.map.getTileSize().height;
         var origin = cc.PointMake(tileCoords.x * this.map.getTileSize().width, levelHeightInPixels - ((tileCoords.y + 1) * this.map.getTileSize().height));
         return cc.RectMake(origin.x, origin.y, this.map.getTileSize().width, this.map.getTileSize().height);
     },
 
     getSurroundingTilesAtPosition:function (p, layer) {
-
+        if (gameOver) {
+            return;
+        }
         var position = p.getPosition();
         var plPos = this.tileCoordForPosition(position); //1    
         var gids = []; //2
@@ -543,8 +768,13 @@ var GameField = cc.Layer.extend(
             var r =  Math.floor(i / 3);
             var tilePos = cc.PointMake(plPos.x + (c - 1), plPos.y + (r - 1));
         
-            if (tilePos.y >= (this.map.getMapSize().height)) {
+            if (tilePos.y > (this.map.getMapSize().height)) {
                 //fallen in a hole
+
+                if (p._typeObject == 1) {
+                    this.unschedule(this.update);
+                }
+
                 if (p._typeObject == 1) {
                     this.gameOver(0);
                     return null;    
@@ -669,8 +899,10 @@ var GameField = cc.Layer.extend(
                 if (p._typeObject == 2) {
                     if (tileIndx == 2) {
                         p.moveType = kMoveRight;
+                        p.setFlipX(true);
                     } else if (tileIndx == 3) {
                         p.moveType = kMoveLeft;
+                        p.setFlipX(false);
                     } 
                 }
             } else {
@@ -711,13 +943,18 @@ var GameField = cc.Layer.extend(
     },
 
     handleHazardCollisions:function (p) {
+        if (gameOver) {
+            return;
+        }
         var tiles = this.getSurroundingTilesAtPosition(p, this.hazards);
+
         for (var i = 0; i < tiles.length; i++) {
             var dic = tiles[i];
             var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height);
             var pRect = p.collisionBoundingBox();
         
             if (parseInt(dic["gid"]) && cc.rectIntersectsRect(pRect, tileRect)) {
+                this.unschedule(this.update);
                 this.gameOver(0);
             }
         }
@@ -725,11 +962,34 @@ var GameField = cc.Layer.extend(
 
     gameOver:function (won) {
         gameOver = true;
-        //this.restartGame();
+        if(won == 0) {
+            var goback = cc.Sprite.create(s_backFailed);
+
+            goback.setPosition(cc.PointMake(480, 320));
+            this.addChild(goback, 100);
+
+            var restartNormal = cc.Sprite.createWithSpriteFrameName("replay_s.png");
+            var restartSelected = cc.Sprite.createWithSpriteFrameName("replay_s.png");
+            var restartDisabled = null;
+            var restartGame = cc.MenuItemSprite.create(restartNormal, restartSelected, restartDisabled, this.restartGame, this);
+
+            var menu = cc.Menu.create(restartGame);
+            menu.alignItemsVerticallyWithPadding(10);
+            this.addChild(menu, 102, 200);
+            menu.setPosition(480, 150);
+            cc.AudioEngine.getInstance().playEffect(s_deathEffect);
+        }
+        else {
+            this.finishGame();
+        }
     },
 
     checkForWin:function () {
+        if (gameOver) {
+            return;
+        }
         if(this.player.getPosition().x > 3130.0) {
+            this.unschedule(this.update);
             this.gameOver(1);
         }
     },
@@ -748,6 +1008,13 @@ var GameField = cc.Layer.extend(
     
         var centerOfView = cc.PointMake(winSize.width/2, winSize.height/2);
         var viewPoint = cc.pSub(centerOfView, actualPosition);
+
+        if(viewPoint.x > 0) {
+            viewPoint.x = 0;
+        }
+        if(viewPoint.y > 0) {
+            viewPoint.y = 0;
+        }        
         this.map.setPosition(viewPoint); 
 
         this.back.setPosition(cc.PointMake(viewPoint.x / 4.0, viewPoint.y));
@@ -757,7 +1024,7 @@ var GameField = cc.Layer.extend(
         if(hideMode) {
             if(this.walls2.hideTileAt(position)) {
                 ++hidedCount;
-                this.back.setOpacity(255 * (1 - hidedCount / elementsCount));
+                this.back.setOpacity(255 * (1 - (hidedCount * 3) / elementsCount));
             }
         }
         else {
@@ -765,12 +1032,346 @@ var GameField = cc.Layer.extend(
         }
     },
 
+    loadPictureObject:function () {
+        var picture_objects = this.map.getObjectGroup("objects");
+        var objects = picture_objects.getObjects();
+        for(var i = 0; i < objects.length; ++i) {
+            var object = objects[i];
+            var pos = cc.PointMake(object.x, object.y);
+            if(object.id == 1) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_1_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 1;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 2) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_2_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 2;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 3) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_3_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 3;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 4) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_4_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 4;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 5) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_5_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 5;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 6) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_6_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 6;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 7) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_7_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 7;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 8) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_8_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 8;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 9) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_9_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 9;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 10) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_10_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 10;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 11) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_11_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 11;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 12) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_12_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 12;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 13) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_13_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 13;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 14) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_14_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 14;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 15) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_15_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 15;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 16) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_16_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 16;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 17) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_17_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 17;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 18) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_18_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 18;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+            else if(object.id == 19) {
+                var sprite = cc.MySprite.createWithSpriteFrameName("objects_19_c.png");
+                sprite.setPosition(pos);
+                sprite.setAnchorPoint(cc.PointMake(0.5, 0));
+                this.map.addChild(sprite, 3);
+                sprite._typeObject = 19;
+                cc.ArrayAppendObject(this.listOfPictures, sprite);
+            }
+        }
+    },
+
+    checkPictureObjects:function () {
+        for(var i = this.listOfPictures.length; i > 0; --i) {
+            var sprite = this.listOfPictures[i - 1];
+
+            if(cc.pDistance(this.player.getPosition(), sprite.getPosition()) < 70) {
+                cc.ArrayRemoveObjectAtIndex(this.listOfPictures, i - 1);
+                sprite.runAction(cc.FadeOut.create(1));
+
+                if(sprite._typeObject == 1) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_1_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 2) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_2_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 3) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_3_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 4) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_4_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 5) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_5_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 6) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_6_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 7) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_7_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 8) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_8_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 9) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_9_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 10) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_10_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 11) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_11_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 12) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_12_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 13) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_13_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 14) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_14_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 15) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_15_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 16) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_16_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 17) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_17_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 18) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_18_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+                else if(sprite._typeObject == 19) {
+                    var sprite2 = cc.MySprite.createWithSpriteFrameName("objects_19_d.png");
+                    sprite2.setPosition(sprite.getPosition());
+                    sprite2.setAnchorPoint(cc.PointMake(0.5, 0));
+                    sprite2.setOpacity(0);
+                    this.map.addChild(sprite2, 2);
+                    sprite2.runAction(cc.FadeIn.create(1));
+                }
+            }
+        }
+    },
+
     restartGame:function (pSender) 
     {
+        this.unschedule(this.update);
         var scene = cc.Scene.create();
         scene.addChild(GameField.create());
         cc.Director.getInstance().replaceScene(cc.TransitionFade.create(1.2, scene));
     },
+
+    finishGame:function (pSender) 
+    {
+        var scene = cc.Scene.create();
+        scene.addChild(FinalMenu.create());
+        cc.Director.getInstance().replaceScene(cc.TransitionFade.create(1.2, scene));
+    },
+
 });
 
 GameField.create = function () 

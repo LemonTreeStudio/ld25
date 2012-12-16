@@ -1,57 +1,188 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="100" height="20" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="land1" tilewidth="32" tileheight="32" spacing="1" margin="1">
-  <image source="land1.png" width="397" height="133"/>
+  <image source="land1.png" width="397" height="364"/>
  </tileset>
+ <layer name="hazards" width="100" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3XUQpAERCFYXtys/+leVFXkhLGwf/VPKAmZl6McwAAALrC7gscaqRuX4rZeV+2qm49eendT6EWCnfI+RTl2lfOZlOrxevoBwDAWvkHAQCcZfXM2MNihrXSmsnzvVveqyYCIJP4nUAfAAA=
+  </data>
+ </layer>
  <layer name="walls" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+2VWwqAIBBFZwUtICp7fPXR/rdXQYJIpuE4mt0Dgz8yOZ5uEQEAAAAAAAAA+BsbY6+FsVfJpJyzu9ZYL4u11sh81JT4GdpHH9HDdlCjE6mZYn24zlmjEwlifPjuvAYnEt8ok1Af57lao0LP+EUn56yKZD1oOP4fgA+XDzsPrsrxDnGSMwt35MgHsuhG+xgoLA++jDzlqrn2rC/66Z7qpnz7QvuUVCOB0tgBZlXlnUAfAAA=
+   H4sIAAAAAAAAA+1YC27CMAzNNZhg08b4lEGRdrzt8qulWjKvtuO0afdhT7KA1HWCn+0kvqR//CRsFphj18lhgXn+ApCPl04+O3kAeVb0+FnO18dOTpNXeh9o09DXpVgix+4FNXxp2aAceupk3wt9n8o9YQd2Sbwc3YGupa/p5WzXBuWHVo9KoPGxFd+xXm3TEJeC+db9J629EWL5+BX0mn4M9dEeS67Wlqw9hznyg9dHvpA8U74cQIfRpngcki7lB/pJs0FjV8XGURkf6wv5ntxXx8S5ZusAY2xzZdjH/7Exxr1nlt80WH7TfOzZRf5q8GFBxqIHbT+37K+VMZrnDDbm5uPdeUacHOC3VW9wTtIdU7ejZ6IIb57PEBofmv7cfOTg8YVzentDdF+I5lVEj2KCarGseU0/hsLjuXway8fSdxTPP3wOiNQY8iHe17S9o03+na3WuQD3oKsyjrr4LBrTtUD+tvin/+Cdw8bOJ/Pf8s1UTqT/ca4SPkqAa5Znjgg8LvAsXquOoh3LN3Ocd2vzwfc09nnuXS3G5FhJLtbgg2uftKOtgca8uzXVuT18WnVRjvFceF4hmyfQkWu26gL6hO8fmv4q3cY+3+Vze5OVY1E+uBdh7buNYofe4R6AFWsYW5F4zt3P0ddYE/jM/JZu+xQf/Sc903K9TcPeBvp9av5H+ND6DRq0taD9xzQ8W0XvEgTcpyQ4Zjg+vP6V1avQehZ8Joz0NUhX60lpvSmtf4V1BhHlghDhI2rD4mNqfY3WkykgTqI8l/SvSrggoA95Xyk5w83Nx2/t1ZdyQdDuXIzSXpHHB/Hr1QRPzhPe/S4Zex+RPuTcYHCOfAH9K1FUQB8AAA==
   </data>
  </layer>
  <layer name="walls2" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+2V3QqAIAxGR/QvBF30/q9aUkJIS8OlZt+B4c1YW8cVEQAAAAAAAACAv7EI1lKCtXLmzTmb4wz1oqyzRMYthpefYXzUATVsByU6iTVTqA+uzxKdxCDEh+udl+AkxjfqjK8P3Vd3Ct8ev+hEz1pRXA8Gif8HkIPzYe8DFynukCQpd+GKFPuBXeQxPlra78nTsHdkvMmdjpyZnu0cV9OV51snp+gJ5MYKune+aUAfAAA=
+   H4sIAAAAAAAAA+1ZTUsDQQxdCiLW1i+w+jf8A/bkQRQ9KPULLx5ExIv//+JGNxCfLzOZ7rSK+iBsm00zY94kmRlnzT9+Eo6WMMa4lc0ljPMbgHzctnJD5C5hd5EZY6uVnd4z/Rs4bb7GuhTXNSbyj3fUqFceH5fN5xx77aQvpP6ttrJhJFUPx2Dr2TO7nO/akPxg9agEjI+Z+fzQiWKd2O8WjLfSPSetbBvxYjwCu+1Oh/boTyVXa0vmnsMi8uPSPC3P0nO01+DfILGIrkOxlfzAODEfotsjPraIfoXYRWB/N2xlYGSt0JflQ3v0Beg0phhfBfJxQubZgA7feXFj8OLGYpzyi/zV4MPDsImtN9bPvX7A9LfEx6L5OEi8E0424btXb3BMsS1dz+on8rsIb6xelfDB9C+J8WvwkUOKLxwz1RuifSGaVxG7afNRo6bkMxPW+5GPp8T4KT6WfUZJxUf3AZEaI3k1III5MzHvmN9a+wLLh9Sv5+5zio9H0EfXdC1IvD3+pdan9mHzjmfz34tN7mydg8T/GHSR/EA+SoDrSOJXUvdTXOBevFYdRT9ebBax363Nh57TNOa5Oszy3upKcrEGHzL/ffDD5iA6jw/d+57Dk/WPE9Addk/cr8g61nWJfKTuHDEmev7wzn878H3Q5HuTl2NRPobdnJho7UM/8hu9A9CxkY8ZfL+GJwN7Z/MeY401QeY16oTdV4ie5fqE2GLc5z1TKCJ8sPsGBjYX9C9nhzMjsoeyaz3Hh5wRvRx7cITBu6tgdxaSd6sZG2vLOGZ3U+z+CusMIsqFIMJHDjk+pFb16UHCZ6Se9IFwEuW55P6qhAsB8qF9RSS6h1s0H33ryXehlAsBO3MpojlyBU/EffPRv9n/sCLi9YyfLPOeRywfet5U6DnnDZj4uSxAHwAA
   </data>
  </layer>
- <layer name="hazards" width="100" height="20">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3TQQ0AAAgDsUnCvzpUkIWkVXCfSwAAAAC4Nu0AeMAnAAC0LelMd+RAHwAA
-  </data>
- </layer>
- <objectgroup name="enemies" width="100" height="20">
-  <object x="682" y="533"/>
-  <object x="309" y="415"/>
-  <object x="379" y="375"/>
-  <object x="380" y="412"/>
-  <object x="269" y="391"/>
-  <object x="231" y="465"/>
-  <object x="162" y="433"/>
-  <object x="109" y="474"/>
-  <object x="91" y="554"/>
-  <object x="162" y="559"/>
-  <object x="279" y="562" width="1" height="1"/>
-  <object x="744" y="554"/>
-  <object x="492" y="271"/>
-  <object x="571" y="256"/>
-  <object x="336" y="333"/>
-  <object x="217" y="304" width="1"/>
-  <object x="196" y="343"/>
-  <object x="227" y="362" width="2" height="4"/>
-  <object x="270" y="280" width="25" height="29"/>
-  <object x="233" y="278" width="1" height="2"/>
-  <object x="144" y="306"/>
-  <object x="151" y="379"/>
-  <object x="193" y="401"/>
-  <object x="224" y="428" width="3"/>
-  <object x="387" y="377"/>
-  <object x="444" y="304" width="2"/>
-  <object x="457" y="268"/>
-  <object x="391" y="268"/>
-  <object x="335" y="247"/>
-  <object x="194" y="255"/>
-  <object x="125" y="258" height="3"/>
-  <object x="110" y="403" height="2"/>
-  <object x="307" y="493"/>
-  <object x="529" y="139"/>
+ <objectgroup name="objects" width="100" height="20">
+  <object name="tree" x="384" y="224">
+   <properties>
+    <property name="id" value="6"/>
+   </properties>
+  </object>
+  <object x="304" y="448">
+   <properties>
+    <property name="id" value="8"/>
+   </properties>
+  </object>
+  <object x="368" y="448">
+   <properties>
+    <property name="id" value="7"/>
+   </properties>
+  </object>
+  <object x="1234" y="481">
+   <properties>
+    <property name="id" value="4"/>
+   </properties>
+  </object>
+  <object x="992" y="608">
+   <properties>
+    <property name="id" value="7"/>
+   </properties>
+  </object>
+  <object x="528" y="64">
+   <properties>
+    <property name="id" value="9"/>
+   </properties>
+  </object>
+  <object x="208" y="64">
+   <properties>
+    <property name="id" value="7"/>
+   </properties>
+  </object>
+  <object x="240" y="64">
+   <properties>
+    <property name="id" value="9"/>
+   </properties>
+  </object>
+  <object x="304" y="64">
+   <properties>
+    <property name="id" value="8"/>
+   </properties>
+  </object>
+  <object x="768" y="128">
+   <properties>
+    <property name="id" value="8"/>
+   </properties>
+  </object>
+  <object x="1824" y="448">
+   <properties>
+    <property name="id" value="6"/>
+   </properties>
+  </object>
+  <object x="80" y="512">
+   <properties>
+    <property name="id" value="18"/>
+   </properties>
+  </object>
+  <object x="528" y="384">
+   <properties>
+    <property name="id" value="19"/>
+   </properties>
+  </object>
+  <object x="679" y="606">
+   <properties>
+    <property name="id" value="13"/>
+   </properties>
+  </object>
+  <object x="304" y="224">
+   <properties>
+    <property name="id" value="17"/>
+   </properties>
+  </object>
+  <object x="144" y="224">
+   <properties>
+    <property name="id" value="11"/>
+   </properties>
+  </object>
+  <object x="1344" y="416">
+   <properties>
+    <property name="id" value="3"/>
+   </properties>
+  </object>
+  <object x="2736" y="416">
+   <properties>
+    <property name="id" value="14"/>
+   </properties>
+  </object>
+  <object x="1600" y="384">
+   <properties>
+    <property name="id" value="16"/>
+   </properties>
+  </object>
+  <object x="1920" y="512">
+   <properties>
+    <property name="id" value="15"/>
+   </properties>
+  </object>
+  <object x="2144" y="448">
+   <properties>
+    <property name="id" value="2"/>
+   </properties>
+  </object>
+  <object x="2464" y="608">
+   <properties>
+    <property name="id" value="4"/>
+   </properties>
+  </object>
+  <object x="2752" y="320">
+   <properties>
+    <property name="id" value="8"/>
+   </properties>
+  </object>
+  <object x="3104" y="448">
+   <properties>
+    <property name="id" value="10"/>
+   </properties>
+  </object>
+  <object x="2976" y="320">
+   <properties>
+    <property name="id" value="1"/>
+   </properties>
+  </object>
+  <object x="130" y="448" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="67" y="132" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="467" y="36" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="878" y="100" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="593" y="542" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="807" y="403" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="1109" y="411" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
+  <object x="1134" y="568" width="22" height="20">
+   <properties>
+    <property name="id" value="100"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
