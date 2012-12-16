@@ -38,6 +38,8 @@
         appFiles:[
             'box2d/GB2ShapeCache.js',
             'TestBox2d/src/Resource.js',
+            'TestBox2d/src/MainMenu.js',
+            'TestBox2d/src/FinalMenu.js',
             'TestBox2d/src/GameField.js',
         ]
     };
