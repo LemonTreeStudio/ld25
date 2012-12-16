@@ -446,7 +446,7 @@ cc.Enemy = cc.Sprite.extend({
     },
 
     collisionBoundingBox:function () {
-        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 0);
+        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 2);
         var diff = cc.pSub(this.desiredPosition, this.getPosition());
         var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
         return returnBoundingBox;
