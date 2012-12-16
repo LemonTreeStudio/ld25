@@ -5,12 +5,12 @@
  </tileset>
  <layer name="walls" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+2W3QqAIAxG9xxR2c9VF73/61WQIJK42jSz78DwJpbz9FVEAAAAAAAAAAD+xqrYa1bsVTIp52zPVepl9tYamfYaE9/D+ugEPXwHNTrJNZPUR2ifNTrJgcRH7MxrcJLjHeXC9XHsq3GKu8cvOjlmNZTXg0Xj+wH0CPnw8xCqJ8+Q5j+2lDezcMUb+UAWw1gfPfHyEMsIJ1fLjX62p7mo2HXcPiXVQKA0Nkh0qupAHwAA
+   H4sIAAAAAAAAA+3W0Q5AMAwF0H6HYNiTB///e0g0kcVstGbmnqTxIrW5CiIAAAAAAAD4m0mxl1XslbMn91lvR2ku1jmWaFiqf/ganEcj6OFmUGImqfYkzcO3zhIzSUGSR+iel5BJinfUXmwe67qqXcWu8YuZrHs1lDYHpvH9AD2+PNx58NWdZ0jzH1vqzVk48sZ8YBb9OI+W4uYhNCNnc8XGC/24pzmo0HmxfXKqjiA3M3Om53NAHwAA
   </data>
  </layer>
  <layer name="walls2" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+2W3QqAIAxGR/TfVRe9/6tWlCDSUNsys+/A8KbW1nElEQAAAAAAAACAv7Eo5poUc+XMk3025yr1MjlriYxbDA8/w/ioBTlcByU6SdWT1AdXZ4lOUiDx4XvnJThJ8Y2yCfWx19VZEVrjF53svVaU1oNB4/8B9OB8uPPAxZ09pHnGlvLmLFzxxnxgFnmMj5aOfRIb7oyMAffMFDdzXE7fdaF5coqeQG6sD0xX5EAfAAA=
+   H4sIAAAAAAAAA+3W3Q5AMAwF4Eb878qF939VhCWyKKO1zZwvadxIbY6CCAAAAAAAAP5mVOxlFHul7M19VttRmotxjjnq5+pevobNoxT0cDPIMZNQe5Lmwa0zx0xCkORxdc9zyCTEO2rPN49lXc2ufNf4xUyWvRYUNgdL4/sBerg83Hng6skzpPmPLRVzFo7EmA/MIs/mUdP6nNwtd0b6k3Otge7NHNfz6jzfPilVS5CaCZnDQX9AHwAA
   </data>
  </layer>
  <layer name="hazards" width="100" height="20">
@@ -18,4 +18,7 @@
    H4sIAAAAAAAAA+3TQQ0AAAgDsUnCvzpUkIWkVXCfSwAAAAC4Nu0AeMAnAAC0LelMd+RAHwAA
   </data>
  </layer>
+ <objectgroup name="enemies" width="100" height="20">
+  <object x="682" y="533"/>
+ </objectgroup>
 </map>

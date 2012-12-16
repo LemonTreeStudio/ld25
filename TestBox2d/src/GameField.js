@@ -361,7 +361,7 @@ var GameField = cc.Layer.extend(
 {
     map:null,
     player:null,
-    enemy:null,
+    enemies:null,
     walls:null,
     walls2:null,
     hazards:null,
@@ -381,6 +381,7 @@ var GameField = cc.Layer.extend(
         gameOver = false;
         hideMode = true;
         hidedCount = 0;
+        this.enemies = [];
 
         if (this._super) 
         {
@@ -407,11 +408,17 @@ var GameField = cc.Layer.extend(
             this.player.setPosition(cc.PointMake(64 + 16, 96 + 16));
             this.map.addChild(this.player, 15);
 
-            this.enemy = cc.Enemy.createWithSpriteFrameName("char.png");
-            this.enemy.setPosition(cc.PointMake(500 + 16, 96 + 16));
-            this.enemy.moveType = kMoveLeft;
-            this.map.addChild(this.enemy, 15);
+            var enemies_tmx = this.map.getObjectGroup("enemies");
+            var enemies_obj = enemies_tmx.getObjects();
 
+            for (var i = 0; i < enemies_obj.length; ++i) {
+                var enemy = cc.Enemy.createWithSpriteFrameName("char.png");
+                enemy.setPosition(cc.PointMake(enemies_obj[i].x, enemies_obj[i].y));
+                enemy.moveType = kMoveLeft;
+                this.map.addChild(enemy, 15);
+                cc.ArrayAppendObject(this.enemies, enemy);
+            }
+            
             this.walls = this.map.getLayer("walls");
             this.walls2 = this.map.getLayer("walls2");
             this.hazards = this.map.getLayer("hazards");
@@ -501,12 +508,15 @@ var GameField = cc.Layer.extend(
             return;
         }
         this.player.update(dt);
-        this.enemy.update(dt);
         this.checkForWin();
         this.checkForAndResolveCollisions(this.player);
-        this.checkForAndResolveCollisions(this.enemy);
         this.handleHazardCollisions(this.player);
         this.setViewpointCenter(this.player.getPosition());
+
+        for (var i = 0; i < this.enemies.length; ++i) {
+            this.enemies[i].update(dt);
+            this.checkForAndResolveCollisions(this.enemies[i]);
+        }
     },
 
     tileCoordForPosition:function (position) {
