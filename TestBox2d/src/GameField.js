@@ -642,12 +642,9 @@ var GameField = cc.Layer.extend(
                                 resolutionWidth = -intersection.size.width;
                             }
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x + resolutionWidth , p.desiredPosition.y);
-<<<<<<< HEAD
                         }   
-=======
-                            this.hideColorForTile(dic["tilePos"]);
-                        } 
->>>>>>> bf5754aed940a76e84a92d1cf29c402d8f0cfa48
+                        this.hideColorForTile(dic["tilePos"]);
+                         
                     }  
                 }
 
@@ -691,9 +688,7 @@ var GameField = cc.Layer.extend(
                         } else if (tileIndx == 6) {
                                 p.moveType = kMoveLeft;    
                         }
-                    }
-                
-                    
+                    }    
                 }
             }  
         }
