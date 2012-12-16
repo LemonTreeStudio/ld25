@@ -576,8 +576,6 @@ var GameField = cc.Layer.extend(
 
             this.loadPictureObject();
 
-            cc.AudioEngine.getInstance().playMusic(s_bgMusic, true);
-
             // accept touch now!
             this.setTouchEnabled(true);
 
@@ -616,7 +614,7 @@ var GameField = cc.Layer.extend(
         if(e == cc.KEY.r)
         {
             this.restartGame();     
-//            this.finishGame();
+            //this.gameOver(1);
         }
         else if(e == cc.KEY.right) 
         {
@@ -629,6 +627,10 @@ var GameField = cc.Layer.extend(
             this.player.playPayerAnimation();
         }
         else if(e == cc.KEY.space) 
+        {
+            this.player.mightAsWellJump = true;
+        }
+        else if(e == cc.KEY.up) 
         {
             this.player.mightAsWellJump = true;
         }
@@ -651,6 +653,10 @@ var GameField = cc.Layer.extend(
             this.player.stopPlayerAnimation();
         }
         else if(e == cc.KEY.space) 
+        {
+            this.player.mightAsWellJump = false;
+        }
+        else if(e == cc.KEY.up) 
         {
             this.player.mightAsWellJump = false;
         }
@@ -921,7 +927,13 @@ var GameField = cc.Layer.extend(
             cc.AudioEngine.getInstance().playEffect(s_deathEffect);
         }
         else {
+     //        this.runAction(cc.Sequence.create(cc.DelayTime.create(1),
+     //                        cc.Spawn.create(cc.MoveBy.create(2, cc.PointMake(-100, 100)),    
+     //                                        cc.ScaleTo.create(2, 2), null), null));
             this.finishGame();
+
+     //        this.player.runAction(cc.Sequence.create(cc.DelayTime.create(3),
+     //                        cc.CallFunc.create(this, this.finishGame), null));
         }
     },
 
@@ -965,7 +977,11 @@ var GameField = cc.Layer.extend(
         if(hideMode) {
             if(this.walls2.hideTileAt(position)) {
                 ++hidedCount;
-                this.back.setOpacity(255 * (1 - (hidedCount * 3) / elementsCount));
+                var op = 255 * (1 - (hidedCount * 2.5) / elementsCount);
+                if(op < 1) {
+                    op = 1;
+                }
+                this.back.setOpacity(op);
             }
         }
         else {

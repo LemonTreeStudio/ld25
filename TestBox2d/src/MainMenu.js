@@ -35,6 +35,7 @@ var MainMenu = cc.Layer.extend(
             this.addChild(menu, 102, 200);
             menu.setPosition(480, 80);
 
+            cc.AudioEngine.getInstance().playMusic(s_bgMusic, true);
 
             bRet = true;
         }

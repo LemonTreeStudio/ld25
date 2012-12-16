@@ -6,7 +6,7 @@ var s_objects 		= "TestBox2d/res/gameObjectsAtl.png";
 var s_bg1           = "TestBox2d/res/bg_land1_color.png";
 
 //music
-var s_bgMusic = "TestBox2d/res/sounds/L2_BM.mp3";
+var s_bgMusic = "TestBox2d/res/sounds/BM.mp3";
 
 //effect
 var s_jumpEffect = "TestBox2d/res/sounds/jump1.mp3";

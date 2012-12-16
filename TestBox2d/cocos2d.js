@@ -28,9 +28,9 @@
     var d = document;
     var c = {
         COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
-        box2d:true,
+        box2d:false,
         chipmunk:false,
-        showFPS:true,
+        showFPS:false,
         frameRate:60,
         tag:'gameCanvas', //the dom element to run cocos2d on
         engineDir:'cocos2d/',

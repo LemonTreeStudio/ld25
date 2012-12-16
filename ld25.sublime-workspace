@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"play",
+				"playBackgroundMusic"
+			],
+			[
+				"get",
+				"getPosition"
+			],
+			[
+				"spri",
+				"sprite"
+			],
+			[
+				"pla",
+				"player"
+			],
+			[
 				"size",
 				"size"
 			],
@@ -155,7 +171,15 @@
 			"file": "TestBox2d/src/GameField.js",
 			"settings":
 			{
-				"buffer_size": 16536,
+				"buffer_size": 48378,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "TestBox2d/src/MainMenu.js",
+			"settings":
+			{
+				"buffer_size": 2298,
 				"line_ending": "Unix"
 			}
 		},
@@ -163,7 +187,47 @@
 			"file": "TestBox2d/src/Resource.js",
 			"settings":
 			{
-				"buffer_size": 745,
+				"buffer_size": 1265,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "TestBox2d/src/FinalMenu.js",
+			"settings":
+			{
+				"buffer_size": 2241,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "TestBox2d/cocos2d.js",
+			"settings":
+			{
+				"buffer_size": 2893,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "main.js",
+			"settings":
+			{
+				"buffer_size": 2708,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/dmitryvalov/Desktop/Cocos2d-html5-v2.1/samples/tests/MenuTest/MenuTest.js",
+			"settings":
+			{
+				"buffer_size": 17031,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cocos2d/cocoa/CCGeometry.js",
+			"settings":
+			{
+				"buffer_size": 14897,
 				"line_ending": "Unix"
 			}
 		},
@@ -171,7 +235,7 @@
 			"file": "cocos2d/actions/CCActionInterval.js",
 			"settings":
 			{
-				"buffer_size": 56354,
+				"buffer_size": 58111,
 				"line_ending": "Unix"
 			}
 		}
@@ -204,6 +268,10 @@
 	},
 	"file_history":
 	[
+		"/Applications/XAMPP/xamppfiles/htdocs/ld24/LD48/src/GameField.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/ld25/TestBox2d/src/GameField.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/ld24/LD48/src/Resource.js",
+		"/Applications/XAMPP/xamppfiles/htdocs/ld25/TestBox2d/src/Resource.js",
 		"/Applications/XAMPP/xamppfiles/htdocs/Game/game/cocos2d.js",
 		"/Applications/XAMPP/xamppfiles/htdocs/Game/cocos2d/tileMap_parallax_nodes/CCTMXLayer.js",
 		"/Applications/XAMPP/xamppfiles/htdocs/Game/game/src/lnHideAction",
@@ -343,6 +411,34 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"AudioEngine",
+			"getSurroundingTilesAtPosition",
+			">>",
+			"removeFromParentAndCleanup",
+			"getSurroundingTilesAtPosition",
+			"restartga",
+			"restartGame",
+			"audio",
+			"jump",
+			"loadLevelByNum",
+			"AudioEngine",
+			"cc.Sequence.",
+			" ",
+			"checkForWin",
+			"gameover(",
+			"jump",
+			"restartGame",
+			"gameover",
+			"back",
+			"listOfPictures",
+			"ArrayAppendObject",
+			"this.map.addChild",
+			"for(var i = 0;",
+			"gameOver",
+			"getSurroundingTilesAtPosition",
+			"gameOver",
+			"enemy",
+			"log",
 			"runAc",
 			"runAction",
 			"size",
@@ -418,7 +514,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -433,8 +529,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								2580,
+								2580
 							]
 						],
 						"settings":
@@ -444,7 +540,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 311.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -454,15 +550,15 @@
 					"file": "TestBox2d/src/GameField.js",
 					"settings":
 					{
-						"buffer_size": 16536,
+						"buffer_size": 48378,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								16551,
+								16551
 							]
 						],
 						"settings":
@@ -472,25 +568,53 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 8291.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "TestBox2d/src/Resource.js",
+					"file": "TestBox2d/src/MainMenu.js",
 					"settings":
 					{
-						"buffer_size": 745,
+						"buffer_size": 2298,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								1339,
+								1339
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 261.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "TestBox2d/src/Resource.js",
+					"settings":
+					{
+						"buffer_size": 1265,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								572,
+								572
 							]
 						],
 						"settings":
@@ -506,11 +630,151 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
+					"file": "TestBox2d/src/FinalMenu.js",
+					"settings":
+					{
+						"buffer_size": 2241,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1574,
+								1596
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 337.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "TestBox2d/cocos2d.js",
+					"settings":
+					{
+						"buffer_size": 2893,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1417,
+								1417
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 262.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "main.js",
+					"settings":
+					{
+						"buffer_size": 2708,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2434,
+								2434
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 232.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/Users/dmitryvalov/Desktop/Cocos2d-html5-v2.1/samples/tests/MenuTest/MenuTest.js",
+					"settings":
+					{
+						"buffer_size": 17031,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10068,
+								10082
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3716.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "cocos2d/cocoa/CCGeometry.js",
+					"settings":
+					{
+						"buffer_size": 14897,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11184,
+								11184
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6521.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
 					"file": "cocos2d/actions/CCActionInterval.js",
 					"settings":
 					{
-						"buffer_size": 56354,
+						"buffer_size": 58111,
 						"regions":
 						{
 						},

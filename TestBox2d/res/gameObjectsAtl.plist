@@ -150,7 +150,7 @@
             <key>objects_14_d.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{306,569},{64,75}}</string>
+                <string>{{306,618},{64,75}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -267,7 +267,7 @@
             <key>objects_19_c.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{347,552},{17,15}}</string>
+                <string>{{306,586},{17,15}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -280,7 +280,7 @@
             <key>objects_19_d.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{328,544},{17,15}}</string>
+                <string>{{306,569},{17,15}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -475,7 +475,7 @@
             <key>objects_8_c.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{362,520},{26,30}}</string>
+                <string>{{358,554},{26,30}}</string>
                 <key>offset</key>
                 <string>{2,-1}</string>
                 <key>rotated</key>
@@ -550,6 +550,58 @@
                 <key>sourceSize</key>
                 <string>{264,88}</string>
             </dict>
+            <key>rabbit_1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{351,586},{24,30}}</string>
+                <key>offset</key>
+                <string>{-1,1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,0},{24,30}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>rabbit_2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{362,520},{26,32}}</string>
+                <key>offset</key>
+                <string>{-2,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{1,0},{26,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>rabbit_3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{328,544},{28,32}}</string>
+                <key>offset</key>
+                <string>{1,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,0},{28,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
+            <key>rabbit_4.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{325,578},{24,32}}</string>
+                <key>offset</key>
+                <string>{-1,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,0},{24,32}}</string>
+                <key>sourceSize</key>
+                <string>{32,32}</string>
+            </dict>
             <key>replay_n.png</key>
             <dict>
                 <key>frame</key>
@@ -586,7 +638,7 @@
             <key>size</key>
             <string>{512,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:84474e46b97fa577653e6bf8c87c3a12$</string>
+            <string>$TexturePacker:SmartUpdate:eec8d3d78f983bcf03e1938653ef00b8$</string>
             <key>textureFileName</key>
             <string>gameObjectsAtl.png</string>
         </dict>
