@@ -1037,8 +1037,8 @@ var GameField = cc.Layer.extend(
             if(this.walls2.hideTileAt(position)) {
                 ++hidedCount;
                 var op = 255 * (1 - (hidedCount * 2.5) / elementsCount);
-                if(op < 1) {
-                    op = 1;
+                if(hidedCount * 2.5 >= elementsCount) {
+                    op = 0;
                 }
                 this.back.setOpacity(op);
             }

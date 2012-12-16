@@ -5,7 +5,7 @@
  </tileset>
  <layer name="hazards" width="100" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3XwQqAIAwA0P7J6P8/rYuQSASW1az3YAcVxpwXN00AAHEtbxcwqCt9m3P0zvtnd/WtJa+320ToRYQaSilHvU47Z71F6wUA8Kz6DwLAWO6eGVtFq+eso5m83PvKfaNZAV3ZrYFAHwAA
+   H4sIAAAAAAAAC+3XSwrAIAxFUfekdP9LcyIYpAihfl7oPZCBCiHGiUkJAABA13O7gKC+9K20WJ33z3b1zZOXt+sUeqFQg5VbjOv8craaWi8AAMBZ4x8EABDL7pnRy1OPWu3WbCa3e8p3iKwC+ENivEAfAAA=
   </data>
  </layer>
  <layer name="walls" width="100" height="20">
@@ -89,7 +89,7 @@
     <property name="id" value="13"/>
    </properties>
   </object>
-  <object x="304" y="224">
+  <object x="288" y="224">
    <properties>
     <property name="id" value="17"/>
    </properties>
@@ -104,7 +104,7 @@
     <property name="id" value="3"/>
    </properties>
   </object>
-  <object x="2736" y="416">
+  <object x="2720" y="427">
    <properties>
     <property name="id" value="14"/>
    </properties>
@@ -139,7 +139,7 @@
     <property name="id" value="10"/>
    </properties>
   </object>
-  <object x="2975" y="307">
+  <object x="2992" y="320">
    <properties>
     <property name="id" value="1"/>
    </properties>
@@ -159,22 +159,7 @@
     <property name="id" value="100"/>
    </properties>
   </object>
-  <object x="1272" y="464">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
   <object x="1503" y="445">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="1159" y="593">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="1689" y="596">
    <properties>
     <property name="id" value="100"/>
    </properties>
@@ -184,42 +169,12 @@
     <property name="id" value="100"/>
    </properties>
   </object>
-  <object x="1711" y="253">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
   <object x="1454" y="373">
    <properties>
     <property name="id" value="100"/>
    </properties>
   </object>
-  <object x="1995" y="512">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="2242" y="501">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="2114" y="597">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="2254" y="309">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="2545" y="532">
-   <properties>
-    <property name="id" value="100"/>
-   </properties>
-  </object>
-  <object x="2637" y="308">
+  <object x="1995" y="496">
    <properties>
     <property name="id" value="100"/>
    </properties>
