@@ -181,10 +181,184 @@ cc.Player.createWithSpriteFrameName = function (spriteFrame) {
     return null;
 };
 
+//////////////////////////////////////////////////////////////////////////////////
+
+cc.Enemy = cc.Sprite.extend({
+    _typeObject:0,
+    velocity:cc.PointMake(0, 0),
+    desiredPosition:cc.PointMake(0, 0),
+    onGround:false,
+    moveType:kStop,
+    mightAsWellJump:false,
+    /**
+     * Constructor
+     */
+    ctor:function () {
+            this._super();
+            this._typeObject = 2;
+            this.velocity = cc.PointMake(0, 0);
+            this.onGround = false;
+            this.moveType = kStop;
+            this.mightAsWellJump = false;
+    },
+
+    update:function (dt) {
+        var jumpForce = cc.PointMake(0.0, 310.0);
+        var jumpCutoff = 200.0;
+    
+        if (this.mightAsWellJump && this.onGround) {
+            this.velocity = cc.pAdd(this.velocity, jumpForce);
+            //[[SimpleAudioEngine sharedEngine] playEffect:@"jump.wav"];
+        } 
+        else if (!this.mightAsWellJump && this.velocity.y > jumpCutoff) {
+            this.velocity = cc.PointMake(this.velocity.x, jumpCutoff);
+        }
+    
+        var gravity = cc.PointMake(0.0, -450.0);
+        var gravityStep = cc.pMult(gravity, dt);
+        
+        this.velocity = cc.PointMake(this.velocity.x * 0.90, this.velocity.y); //2
+    
+        if(this.moveType == kMoveRight) {
+            var forwardMove = cc.PointMake(800.0, 0.0);
+            var forwardStep = cc.pMult(forwardMove, dt);
+            this.velocity = cc.pAdd(this.velocity, forwardStep);
+
+            // cc.log('бяка хуяка');
+        }
+        else if(this.moveType == kMoveLeft) {
+            var forwardMove = cc.PointMake(-800.0, 0.0);
+            var forwardStep = cc.pMult(forwardMove, dt);
+            this.velocity = cc.pAdd(this.velocity, forwardStep);
+
+            // this.setPosition(cc.p(this._position.x - 3, this._position.y));
+
+            // cc.log('хуяка бяка');
+        }
+    
+        var minMovement = cc.PointMake(-120.0, -450.0);
+        var maxMovement = cc.PointMake(120.0, 250.0);
+        this.velocity = cc.pClamp(this.velocity, minMovement, maxMovement);
+    
+        this.velocity = cc.pAdd(this.velocity, gravityStep);
+    
+        var stepVelocity = cc.pMult(this.velocity, dt);
+    
+        this.desiredPosition = cc.pAdd(this.getPosition(), stepVelocity);
+    },
+
+    collisionBoundingBox:function () {
+        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 0);
+        var diff = cc.pSub(this.desiredPosition, this.getPosition());
+        var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
+        return returnBoundingBox;
+    },
+
+    /**
+     * HACK: optimization
+     */
+    SET_DIRTY_RECURSIVELY:function () {
+        if (this._batchNode && !this._recursiveDirty) {
+            this._recursiveDirty = true;
+            //this.setDirty(true);
+            this._dirty = true;
+            if (this._hasChildren)
+                this.setDirtyRecursively(true);
+        }
+    },
+
+    /**
+     * position setter (override cc.Node )
+     * @param {cc.Point} pos
+     * @override
+     */
+    setPosition:function (pos) {
+        cc.Node.prototype.setPosition.call(this, pos);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * Rotation setter (override cc.Node )
+     * @param {Number} rotation
+     * @override
+     */
+    setRotation:function (rotation) {
+        cc.Node.prototype.setRotation.call(this, rotation);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+        /**
+     * <p>The scale factor of the node. 1.0 is the default scale factor. <br/>
+     * It modifies the X and Y scale at the same time. (override cc.Node ) <p/>
+     * @param {Number} scale
+     * @override
+     */
+    setScale:function (scale, scaleY) {
+        cc.Node.prototype.setScale.call(this, scale, scaleY);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * VertexZ setter (override cc.Node )
+     * @param {Number} vertexZ
+     * @override
+     */
+    setVertexZ:function (vertexZ) {
+        cc.Node.prototype.setVertexZ.call(this, vertexZ);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * AnchorPoint setter  (override cc.Node )
+     * @param {cc.Point} anchor
+     * @override
+     */
+    setAnchorPoint:function (anchor) {
+        cc.Node.prototype.setAnchorPoint.call(this, anchor);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    /**
+     * visible setter  (override cc.Node )
+     * @param {Boolean} visible
+     * @override
+     */
+    setVisible:function (visible) {
+        cc.Node.prototype.setVisible.call(this, visible);
+        this.SET_DIRTY_RECURSIVELY();
+    },
+
+    setFlipX:function (flipX) {
+        cc.Sprite.prototype.setFlipX.call(this, flipX);
+        this.SET_DIRTY_RECURSIVELY();
+    }
+
+});
+
+cc.Enemy.createWithSpriteFrameName = function (spriteFrame) {
+    if (typeof(spriteFrame) == 'string') {
+        var pFrame = cc.SpriteFrameCache.getInstance().getSpriteFrame(spriteFrame);
+        if (pFrame) {
+            spriteFrame = pFrame;
+        } else {
+            cc.log("Invalid spriteFrameName: " + spriteFrame);
+            return null;
+        }
+    }
+    var sprite = new cc.Enemy();
+    if (sprite && sprite.initWithSpriteFrame(spriteFrame)) {
+        return sprite;
+    }
+    return null;
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+
 var GameField = cc.Layer.extend(
 {
     map:null,
     player:null,
+    enemy:null,
     walls:null,
     hazards:null,
     gameOver:null,
@@ -221,6 +395,11 @@ var GameField = cc.Layer.extend(
             //this.player.setAnchorPoint(cc.p(0.0, 0.0));
             this.player.setPosition(cc.PointMake(64 + 16, 96 + 16));
             this.map.addChild(this.player, 15);
+
+            this.enemy = cc.Enemy.createWithSpriteFrameName("char.png");
+            this.enemy.setPosition(cc.PointMake(500 + 16, 96 + 16));
+            this.enemy.moveType = kMoveLeft;
+            this.map.addChild(this.enemy, 15);
 
             this.walls = this.map.getLayer("walls");
             this.hazards = this.map.getLayer("hazards");
@@ -301,8 +480,10 @@ var GameField = cc.Layer.extend(
             return;
         }
         this.player.update(dt);
+        this.enemy.update(dt);
         this.checkForWin();
         this.checkForAndResolveCollisions(this.player);
+        this.checkForAndResolveCollisions(this.enemy);
         this.handleHazardCollisions(this.player);
         this.setViewpointCenter(this.player.getPosition());
     },
@@ -387,6 +568,7 @@ var GameField = cc.Layer.extend(
             var gid = parseInt(dic["gid"]); //4
       
             if (gid) {
+                
                 var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height); //5
 
                 if (cc.rectIntersectsRect(pRect, tileRect)) {
@@ -435,8 +617,53 @@ var GameField = cc.Layer.extend(
                                 resolutionWidth = -intersection.size.width;
                             }
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x + resolutionWidth , p.desiredPosition.y);
-                        } 
+                        }   
                     }  
+                }
+
+                // enemy
+                if (p._typeObject == 2) {
+                    if (tileIndx == 2) {
+                        p.moveType = kMoveRight;
+                    } else if (tileIndx == 3) {
+                        p.moveType = kMoveLeft;
+                    } 
+                }
+            } else {
+                // falling for enemyes
+                p.mightAsWellJump = false;
+                // chanse 1/3 for jump, left, or fall
+                var chanse = cc.RANDOM_MINUS1_1();
+                cc.log(chanse);
+                if (p._typeObject == 2) {
+                    // falling
+                    if (chanse < -0.33) {
+                        //nothing but the blues
+                    } else if (chanse < 0.33) {
+                        // jump
+                        if (tileIndx == 7) {
+                            if (p.moveType == kMoveLeft) {
+                                p.mightAsWellJump = true;
+                            } else {
+                                p.moveType = kMoveLeft;    
+                            }
+                        } else if (tileIndx == 6) {
+                            if (p.moveType == kMoveRight) {
+                                p.mightAsWellJump = true;
+                            } else {
+                                p.moveType = kMoveRight;    
+                            }
+                        }
+                    } else {
+                        // left
+                        if (tileIndx == 7) {
+                                p.moveType = kMoveRight;    
+                        } else if (tileIndx == 6) {
+                                p.moveType = kMoveLeft;    
+                        }
+                    }
+                
+                    
                 }
             }  
         }
