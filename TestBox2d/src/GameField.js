@@ -353,6 +353,8 @@ cc.Enemy = cc.Sprite.extend({
     onGround:false,
     moveType:kStop,
     mightAsWellJump:false,
+    _isAnimationStarted:false,    
+    _myAnimation:null,
     /**
      * Constructor
      */
@@ -363,6 +365,40 @@ cc.Enemy = cc.Sprite.extend({
             this.onGround = false;
             this.moveType = kStop;
             this.mightAsWellJump = false;
+            _isAnimationStarted = false;
+            _myAnimation = null;
+
+    },
+
+    initEnemyAnimation:function (type) {
+        var animFrames = [];
+        // set frame
+        var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_1.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_2.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_3.png");
+        var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame("rabbit_4.png");
+
+        animFrames.push(frame0);
+        animFrames.push(frame1);
+        // animate
+        this._myAnimation = cc.Animation.create(animFrames, 0.2);
+    },
+
+    playEnemyAnimation:function () {
+        if(this._isAnimationStarted == false)
+        {
+            this._isAnimationStarted = true;
+            var animate = cc.Animate.create(this._myAnimation);
+            this.runAction(cc.RepeatForever.create(animate));
+        }
+    },
+
+    stopEnemyAnimation:function () {
+        if(this._isAnimationStarted == true)
+        {
+            this.stopAllActions();
+            this._isAnimationStarted = false;
+        }
     },
 
     update:function (dt) {
@@ -410,7 +446,7 @@ cc.Enemy = cc.Sprite.extend({
     },
 
     collisionBoundingBox:function () {
-        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 0);
+        var collisionBox = cc.rectInset(this.getBoundingBox(), 3, 2);
         var diff = cc.pSub(this.desiredPosition, this.getPosition());
         var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
         return returnBoundingBox;
@@ -520,7 +556,7 @@ var GameField = cc.Layer.extend(
 {
     map:null,
     player:null,
-    enemy:null,
+    enemies:null,
     walls:null,
     walls2:null,
     hazards:null,
@@ -542,6 +578,7 @@ var GameField = cc.Layer.extend(
         gameOver = false;
         hideMode = true;
         hidedCount = 0;
+        this.enemies = [];
 
         if (this._super) 
         {
@@ -569,6 +606,22 @@ var GameField = cc.Layer.extend(
             this.map.addChild(this.player, 15);
             this.player.initPlayerAnimation();
 
+            var enemies_tmx = this.map.getObjectGroup("objects");
+            var enemies_obj = enemies_tmx.getObjects();
+            
+
+            for (var i = 0; i < enemies_obj.length; ++i) {
+                if (enemies_obj[i].id == 100) {
+                    var enemy = cc.Enemy.createWithSpriteFrameName("rabbit_1.png");
+                    enemy.setPosition(cc.PointMake(enemies_obj[i].x, enemies_obj[i].y));
+                    enemy.moveType = kMoveRight;
+                    enemy.initEnemyAnimation();
+                    enemy.playEnemyAnimation();
+                    this.map.addChild(enemy, 15);
+                    cc.ArrayAppendObject(this.enemies, enemy);
+                }
+            }
+            
             this.walls = this.map.getLayer("walls");
             this.walls2 = this.map.getLayer("walls2");
             this.hazards = this.map.getLayer("hazards");
@@ -674,12 +727,16 @@ var GameField = cc.Layer.extend(
             return;
         }
         this.player.update(dt);
-        //this.enemy.update(dt);
         this.checkForWin();
         this.checkForAndResolveCollisions(this.player);
-        //this.checkForAndResolveCollisions(this.enemy);
         this.handleHazardCollisions(this.player);
         this.setViewpointCenter(this.player.getPosition());
+
+        for (var i = 0; i < this.enemies.length; ++i) {
+            this.enemies[i].update(dt);
+            this.checkForAndResolveCollisions(this.enemies[i]);
+        }
+
         this.checkPictureObjects();
     },
 
@@ -720,7 +777,9 @@ var GameField = cc.Layer.extend(
             if (tilePos.y > (this.map.getMapSize().height)) {
                 //fallen in a hole
 
-                this.unschedule(this.update);
+                if (p._typeObject == 1) {
+                    this.unschedule(this.update);
+                }
 
                 if (p._typeObject == 1) {
                     this.gameOver(0);
@@ -846,23 +905,23 @@ var GameField = cc.Layer.extend(
                 if (p._typeObject == 2) {
                     if (tileIndx == 2) {
                         p.moveType = kMoveRight;
+                        p.setFlipX(true);
                     } else if (tileIndx == 3) {
                         p.moveType = kMoveLeft;
+                        p.setFlipX(false);
                     } 
                 }
             } else {
                 // falling for enemyes
                 p.mightAsWellJump = false;
-                // chanse 1/3 for jump, left, or fall
                 var chanse = cc.RANDOM_MINUS1_1();
-                //cc.log(chanse);
                 if (p._typeObject == 2) {
                     // falling
                     if (chanse < -0.33) {
                         //nothing but the blues
                     } else if (chanse < 0.33) {
                         // jump
-                        if (tileIndx == 7) {
+                        if (tileIndx == 5) {
                             if (p.moveType == kMoveLeft) {
                                 p.mightAsWellJump = true;
                             } else {
