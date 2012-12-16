@@ -24,7 +24,7 @@ cc.Player = cc.Sprite.extend({
     },
 
     update:function (dt) {
-        var jumpForce = cc.PointMake(0.0, 310.0);
+        var jumpForce = cc.PointMake(0.0, 350.0);
         var jumpCutoff = 150.0;
     
         if (this.mightAsWellJump && this.onGround) {
@@ -44,15 +44,18 @@ cc.Player = cc.Sprite.extend({
             var forwardMove = cc.PointMake(800.0, 0.0);
             var forwardStep = cc.pMult(forwardMove, dt);
             this.velocity = cc.pAdd(this.velocity, forwardStep);
+            this.setFlipX(false);
         }
         else if(this.moveType == kMoveLeft) {
+
             var forwardMove = cc.PointMake(-800.0, 0.0);
             var forwardStep = cc.pMult(forwardMove, dt);
             this.velocity = cc.pAdd(this.velocity, forwardStep);
+            this.setFlipX(true);
         }
     
         var minMovement = cc.PointMake(-120.0, -450.0);
-        var maxMovement = cc.PointMake(120.0, 250.0);
+        var maxMovement = cc.PointMake(120.0, 260.0);
         this.velocity = cc.pClamp(this.velocity, minMovement, maxMovement);
     
         this.velocity = cc.pAdd(this.velocity, gravityStep);
@@ -360,8 +363,13 @@ var GameField = cc.Layer.extend(
     player:null,
     enemy:null,
     walls:null,
+    walls2:null,
     hazards:null,
     gameOver:null,
+    hideMode:true,
+    back:null,
+    elementsCount:0,
+    hidedCount:0,
 
     ctor:function () {
         //cc.associateWithNative( this, cc.Layer );
@@ -371,20 +379,23 @@ var GameField = cc.Layer.extend(
     {
         var bRet = false;
         gameOver = false;
+        hideMode = true;
+        hidedCount = 0;
 
         if (this._super) 
         {
             var screenSize = cc.Director.getInstance().getWinSize();
 
-            // var back = cc.Sprite.create(s_background);
-            // back.setAnchorPoint(cc.PointZero());
-            // back.setPosition(cc.PointZero());
-            // this.addChild(back, -10);
+            this.back = cc.Sprite.create(s_bg1);
+            this.back.setAnchorPoint(cc.PointZero());
+            this.back.setScaleX(1.5);
+            this.back.setPosition(cc.PointZero());
+            this.addChild(this.back, -10);
 
             // Load atlas with sprites
             cc.SpriteFrameCache.getInstance().addSpriteFrames(s_objects_plist, s_objects);
 
-            this.map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/orthogonal-test3.tmx");
+            this.map = cc.TMXTiledMap.create("TestBox2d/res/TileMaps/land1.tmx");
             this.addChild(this.map, 10, 123);
 
             this.map.setScale(1.0);
@@ -402,7 +413,9 @@ var GameField = cc.Layer.extend(
             this.map.addChild(this.enemy, 15);
 
             this.walls = this.map.getLayer("walls");
+            this.walls2 = this.map.getLayer("walls2");
             this.hazards = this.map.getLayer("hazards");
+            elementsCount = this.walls2._children.length;
 
             // accept touch now!
             this.setTouchEnabled(true);
@@ -437,7 +450,7 @@ var GameField = cc.Layer.extend(
     },
 
     onKeyDown:function (e) 
-    {
+    {        
         if(e == cc.KEY.r)
         {
             this.restartGame();           
@@ -454,6 +467,10 @@ var GameField = cc.Layer.extend(
         {
             this.player.mightAsWellJump = true;
         }
+        else if(e == cc.KEY.shift) 
+        {
+            hideMode = false;
+        }
     },
     
     onKeyUp:function (e) 
@@ -469,6 +486,10 @@ var GameField = cc.Layer.extend(
         else if(e == cc.KEY.space) 
         {
             this.player.mightAsWellJump = false;
+        }
+        else if(e == cc.KEY.shift) 
+        {
+            hideMode = true;
         }
     },
 
@@ -511,7 +532,7 @@ var GameField = cc.Layer.extend(
             var r =  Math.floor(i / 3);
             var tilePos = cc.PointMake(plPos.x + (c - 1), plPos.y + (r - 1));
         
-            if (tilePos.y > (this.map.getMapSize().height + 50)) {
+            if (tilePos.y >= (this.map.getMapSize().height)) {
                 //fallen in a hole
                 this.gameOver(0);
                 return null;
@@ -580,19 +601,23 @@ var GameField = cc.Layer.extend(
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + intersection.size.height);
                         p.velocity = cc.PointMake(p.velocity.x, 0.0);
                         p.onGround = true;
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 1) {
                         //tile is directly above player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y - intersection.size.height);
                         p.velocity = cc.PointMake(p.velocity.x, 0.0);
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 2) {
                         //tile is left of player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x + intersection.size.width, p.desiredPosition.y);
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 3) {
                         //tile is right of player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x - intersection.size.width, p.desiredPosition.y);
+                        this.hideColorForTile(dic["tilePos"]);
                     } 
                     else {
                         if (intersection.size.width > intersection.size.height) {
@@ -606,7 +631,7 @@ var GameField = cc.Layer.extend(
                                 resolutionHeight = intersection.size.height;
                             }                        
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + resolutionHeight );
-                        
+                            this.hideColorForTile(dic["tilePos"]);                        
                         } 
                         else {
                             var resolutionWidth;
@@ -617,7 +642,12 @@ var GameField = cc.Layer.extend(
                                 resolutionWidth = -intersection.size.width;
                             }
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x + resolutionWidth , p.desiredPosition.y);
+<<<<<<< HEAD
                         }   
+=======
+                            this.hideColorForTile(dic["tilePos"]);
+                        } 
+>>>>>>> bf5754aed940a76e84a92d1cf29c402d8f0cfa48
                     }  
                 }
 
@@ -672,11 +702,12 @@ var GameField = cc.Layer.extend(
 
     handleHazardCollisions:function (p) {
         var tiles = this.getSurroundingTilesAtPosition(p.getPosition(), this.hazards);
-        for (var dic in tiles) {
+        for (var i = 0; i < tiles.length; i++) {
+            var dic = tiles[i];
             var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height);
             var pRect = p.collisionBoundingBox();
         
-            if (parseInt(dic["gid"]) && cc.RectIntersectsRect(pRect, tileRect)) {
+            if (parseInt(dic["gid"]) && cc.rectIntersectsRect(pRect, tileRect)) {
                 this.gameOver(0);
             }
         }
@@ -694,7 +725,9 @@ var GameField = cc.Layer.extend(
     },
 
     setViewpointCenter:function (position) {
-    
+        if(gameOver) {
+            return;
+        }
         var winSize = cc.Director.getInstance().getWinSize();
     
         var x = Math.max(position.x, winSize.width / 2);
@@ -706,6 +739,20 @@ var GameField = cc.Layer.extend(
         var centerOfView = cc.PointMake(winSize.width/2, winSize.height/2);
         var viewPoint = cc.pSub(centerOfView, actualPosition);
         this.map.setPosition(viewPoint); 
+
+        this.back.setPosition(cc.PointMake(viewPoint.x / 4.0, viewPoint.y));
+    },
+
+    hideColorForTile:function (position) {
+        if(hideMode) {
+            if(this.walls2.hideTileAt(position)) {
+                ++hidedCount;
+                this.back.setOpacity(255 * (1 - hidedCount / elementsCount));
+            }
+        }
+        else {
+            this.walls2.showTileAt(position);
+        }
     },
 
     restartGame:function (pSender) 

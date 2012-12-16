@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="land1" tilewidth="32" tileheight="32" spacing="1" margin="1">
+  <image source="land1.png" width="397" height="133"/>
+ </tileset>
+ <layer name="walls" width="100" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2W3QqAIAxG9xxR2c9VF73/61WQIJK42jSz78DwJpbz9FVEAAAAAAAAAAD+xqrYa1bsVTIp52zPVepl9tYamfYaE9/D+ugEPXwHNTrJNZPUR2ifNTrJgcRH7MxrcJLjHeXC9XHsq3GKu8cvOjlmNZTXg0Xj+wH0CPnw8xCqJ8+Q5j+2lDezcMUb+UAWw1gfPfHyEMsIJ1fLjX62p7mo2HXcPiXVQKA0Nkh0qupAHwAA
+  </data>
+ </layer>
+ <layer name="walls2" width="100" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2W3QqAIAxGR/TfVRe9/6tWlCDSUNsys+/A8KbW1nElEQAAAAAAAACAv7Eo5poUc+XMk3025yr1MjlriYxbDA8/w/ioBTlcByU6SdWT1AdXZ4lOUiDx4XvnJThJ8Y2yCfWx19VZEVrjF53svVaU1oNB4/8B9OB8uPPAxZ09pHnGlvLmLFzxxnxgFnmMj5aOfRIb7oyMAffMFDdzXE7fdaF5coqeQG6sD0xX5EAfAAA=
+  </data>
+ </layer>
+ <layer name="hazards" width="100" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3TQQ0AAAgDsUnCvzpUkIWkVXCfSwAAAAC4Nu0AeMAnAAC0LelMd+RAHwAA
+  </data>
+ </layer>
+</map>
