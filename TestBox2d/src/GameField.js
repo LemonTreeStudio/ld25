@@ -601,23 +601,23 @@ var GameField = cc.Layer.extend(
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + intersection.size.height);
                         p.velocity = cc.PointMake(p.velocity.x, 0.0);
                         p.onGround = true;
-                        this.hideColorForTile(dic["tilePos"]);
+                        // this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 1) {
                         //tile is directly above player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y - intersection.size.height);
                         p.velocity = cc.PointMake(p.velocity.x, 0.0);
-                        this.hideColorForTile(dic["tilePos"]);
+                        // this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 2) {
                         //tile is left of player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x + intersection.size.width, p.desiredPosition.y);
-                        this.hideColorForTile(dic["tilePos"]);
+                        // this.hideColorForTile(dic["tilePos"]);
                     } 
                     else if (tileIndx == 3) {
                         //tile is right of player
                         p.desiredPosition = cc.PointMake(p.desiredPosition.x - intersection.size.width, p.desiredPosition.y);
-                        this.hideColorForTile(dic["tilePos"]);
+                        // this.hideColorForTile(dic["tilePos"]);
                     } 
                     else {
                         if (intersection.size.width > intersection.size.height) {
@@ -631,7 +631,7 @@ var GameField = cc.Layer.extend(
                                 resolutionHeight = intersection.size.height;
                             }                        
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x, p.desiredPosition.y + resolutionHeight );
-                            this.hideColorForTile(dic["tilePos"]);                        
+                            // this.hideColorForTile(dic["tilePos"]);                        
                         } 
                         else {
                             var resolutionWidth;
@@ -642,9 +642,11 @@ var GameField = cc.Layer.extend(
                                 resolutionWidth = -intersection.size.width;
                             }
                             p.desiredPosition = cc.PointMake(p.desiredPosition.x + resolutionWidth , p.desiredPosition.y);
-                        }   
+                        }
+                        // this.hideColorForTile(dic["tilePos"]);    
+                    }
+                    if (p._typeObject == 1) {
                         this.hideColorForTile(dic["tilePos"]);
-                         
                     }  
                 }
 
