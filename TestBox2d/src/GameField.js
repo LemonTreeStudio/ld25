@@ -698,11 +698,11 @@ var GameField = cc.Layer.extend(
         return cc.RectMake(origin.x, origin.y, this.map.getTileSize().width, this.map.getTileSize().height);
     },
 
-    getSurroundingTilesAtPosition:function (position, layer) {
+    getSurroundingTilesAtPosition:function (p, layer) {
         if (gameOver) {
             return;
         }
-
+        var position = p.getPosition();
         var plPos = this.tileCoordForPosition(position); //1    
         var gids = []; //2
     
@@ -713,9 +713,15 @@ var GameField = cc.Layer.extend(
         
             if (tilePos.y > (this.map.getMapSize().height)) {
                 //fallen in a hole
+
                 this.unschedule(this.update);
-                this.gameOver(0);
-                return null;
+
+                if (p._typeObject == 1) {
+                    this.gameOver(0);
+                    return null;    
+                } else {
+                    p.removeFromParentAndCleanup(false);
+                }
             } 
         
             var tgid = layer.getTileGIDAt(tilePos); //4
@@ -760,7 +766,7 @@ var GameField = cc.Layer.extend(
         if (gameOver) {
             return;
         }
-        var tiles = this.getSurroundingTilesAtPosition(p.getPosition(), this.walls); //1
+        var tiles = this.getSurroundingTilesAtPosition(p, this.walls); //1
         p.onGround = false;
 
         for (var i = 0; i < tiles.length; i++) {
@@ -881,7 +887,8 @@ var GameField = cc.Layer.extend(
         if (gameOver) {
             return;
         }
-        var tiles = this.getSurroundingTilesAtPosition(p.getPosition(), this.hazards);
+        var tiles = this.getSurroundingTilesAtPosition(p, this.hazards);
+
         for (var i = 0; i < tiles.length; i++) {
             var dic = tiles[i];
             var tileRect = cc.RectMake(parseFloat(dic["x"]), parseFloat(dic["y"]), this.map.getTileSize().width, this.map.getTileSize().height);
