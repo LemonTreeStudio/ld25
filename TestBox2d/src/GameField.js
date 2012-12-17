@@ -226,7 +226,7 @@ cc.Player = cc.Sprite.extend({
     },
 
     collisionBoundingBox:function () {
-        var collisionBox = cc.rectInsetUp(this.getBoundingBox(), 10, 10);
+        var collisionBox = cc.rectInsetUp(this.getBoundingBox(), 10, 14);
         var diff = cc.pSub(this.desiredPosition, this.getPosition());
         var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
         return returnBoundingBox;
