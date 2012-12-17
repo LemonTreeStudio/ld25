@@ -467,6 +467,15 @@ cc.rectInset = function (rectA, dx, dy) {
     return insection;
 };
 
+cc.rectInsetUp = function (rectA, dx, dy) {
+    var insection = cc.RectMake(
+        rectA.origin.x + dx,
+        rectA.origin.y + 2,
+        rectA.size.width - dx * 2.0,
+        rectA.size.height - dy * 2.0);
+    return insection;
+};
+
 /**
  * Offset `rect' by `(dx, dy)'. 
  * @function

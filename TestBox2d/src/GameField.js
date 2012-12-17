@@ -226,7 +226,7 @@ cc.Player = cc.Sprite.extend({
     },
 
     collisionBoundingBox:function () {
-        var collisionBox = cc.rectInset(this.getBoundingBox(), 10, 4);
+        var collisionBox = cc.rectInsetUp(this.getBoundingBox(), 10, 10);
         var diff = cc.pSub(this.desiredPosition, this.getPosition());
         var returnBoundingBox = cc.rectOffset(collisionBox, diff.x, diff.y);
         return returnBoundingBox;
@@ -667,7 +667,6 @@ var GameField = cc.Layer.extend(
         if(e == cc.KEY.r)
         {
             this.restartGame();     
-            //this.gameOver(1);
         }
         else if(e == cc.KEY.right) 
         {
@@ -782,6 +781,7 @@ var GameField = cc.Layer.extend(
                 }
 
                 if (p._typeObject == 1) {
+                    this.unschedule(this.update);
                     this.gameOver(0);
                     return null;    
                 } else {
