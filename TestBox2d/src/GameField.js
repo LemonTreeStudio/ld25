@@ -785,7 +785,7 @@ var GameField = cc.Layer.extend(
                     this.gameOver(0);
                     return null;    
                 } else {
-                    p.removeFromParentAndCleanup(false);
+                    p.removeFromParent(false);
                 }
             } 
         
